@@ -12,7 +12,9 @@ const Row = styled.div`
 
 const InputRow = (props) => {
     return (
-        <Row tabIndex="0" onKeyDown={props.keyDown}></Row>
+        <Row tabIndex="0" 
+            onKeyDown={(event, id) => props.keyDown(event, props.id)}
+            id={props.id}></Row>
     );
 }
  

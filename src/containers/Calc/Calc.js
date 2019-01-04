@@ -7,7 +7,13 @@ const RegSigns = /[/\+\-\*]/;
 
 class Calculator extends Component {
     state = { 
-        inputValue: ''
+       rows: [
+           {
+               id: Date.now(),
+               data: [],
+               solution: '',
+           }
+       ],
      
     }
 
@@ -15,25 +21,30 @@ class Calculator extends Component {
         this.setState({inputValue: event.target.value})
     }
 
-    handleKeyDown = (event) => {
-        if(RegNumbers.exec(event.key)) {
-            console.log('number' + event.key)
+    handleKeyDown = (event, id) => {
+        console.log(id)
+        if (RegNumbers.exec(event.key)) {
+            console.log('number ' + event.key)
         } else if (RegSigns.exec(event.key)) {
             console.log('sign' + event.key)
-        }
+        } 
         return
+    }
 
+    addNumber = (num, id) => {
     }
     render() { 
-        return (
-            <div>
-                <InputRow
-            handleChange={this.handleChange}
-            value={this.state.inputValue}
-            keyDown={this.handleKeyDown} />
+        let rows = this.state.rows.map(row => (
             <InputRow
             handleChange={this.handleChange}
-            value={this.state.inputValue} />
+            value={this.state.inputValue}
+            keyDown={this.handleKeyDown}
+            key={row.id}
+            id={row.id} />   
+        ))
+        return (
+            <div>
+                {rows}
             </div>
             
         );
