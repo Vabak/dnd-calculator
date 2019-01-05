@@ -23,10 +23,8 @@ class Calculator extends Component {
 
     handleKeyDown = (event, id) => {
         if (RegNumbers.exec(event.key)) {
-            console.log('number ' + event.key)
             // this.addNumber(event.key, id);
         } else if (RegSigns.exec(event.key)) {
-            console.log('sign' + event.key)
         } 
         return
     }
