@@ -10,7 +10,7 @@ class Calculator extends Component {
        rows: [
            {
                id: Date.now(),
-               data: [],
+               data: '',
                solution: '',
            }
        ],
@@ -22,17 +22,26 @@ class Calculator extends Component {
     }
 
     handleKeyDown = (event, id) => {
-        console.log(id)
         if (RegNumbers.exec(event.key)) {
             console.log('number ' + event.key)
+            // this.addNumber(event.key, id);
         } else if (RegSigns.exec(event.key)) {
             console.log('sign' + event.key)
         } 
         return
     }
 
-    addNumber = (num, id) => {
-    }
+    // addNumber = (num, id) => {
+    //     let newRowIndex;
+    //     const newRow = this.state.rows.find((row, idx) => {
+    //         newRowIndex = idx;
+    //         return row.id === id});
+    //         newRow.data += num;
+    //         const newRows = [...this.state.rows];
+    //         newRows[newRowIndex] = newRow;
+    //         this.setState({rows: newRows})
+    // }
+
     render() { 
         let rows = this.state.rows.map(row => (
             <InputRow
@@ -40,7 +49,8 @@ class Calculator extends Component {
             value={this.state.inputValue}
             keyDown={this.handleKeyDown}
             key={row.id}
-            id={row.id} />   
+            id={row.id}
+            mathRow={row.data} />   
         ))
         return (
             <div>
