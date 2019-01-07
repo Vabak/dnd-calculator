@@ -11,13 +11,14 @@ const Row = styled.div`
     padding: 20px;
 `;
 
+
 const InputRow = (props) => {
     return (
         <Row tabIndex="0" 
             onKeyDown={(event, id) => props.keyDown(event, props.id)}
             id={props.id}>{props.mathRow}
             <NumerCell />
-            </Row>
+        </Row>
     );
 }
  
