@@ -21,7 +21,7 @@ class Calculator extends Component {
 
     handleKeyDown = (event, id) => {
         if (RegNumbers.exec(event.key)) {
-            // this.addNumber(event.key, id);
+            this.checkNum(event.key, id);
         } else if (RegSigns.exec(event.key)) {
             
         }
@@ -29,23 +29,29 @@ class Calculator extends Component {
     }
 
     checkNum = (num, id) => {
-        if (this.state.row.id === id) {
             if (this.state.row.data.length === 0) {
-                this.createNumer(num);
+                this.createNumber(num);
                 return;
             }
-        }
         return;
     }
 
-    createNumer = (num) => {
-        const oldData = [...this.state.row.data];
+    createNumber = (num) => {
+        console.log('createNum' + num)
+        let newData = [...this.state.row.data];
         const newNumber = { 
             id: Date.now(),
             value: num,
-        }
-        const newData = oldData.push()
-        this.setState({})
+        };
+        newData.push(newNumber);
+        console.log('newdata', newData);
+        this.setState({
+            ...this.state,
+            row: {
+                ...this.state.row,
+                data: newData,
+            }
+        })
     }
 
     // checkNum = (num, id) => {
@@ -63,7 +69,7 @@ class Calculator extends Component {
     render() {
         return (
             <div>
-                <InputRow />
+                <InputRow keyDown={this.handleKeyDown} />
             </div>
 
         );
