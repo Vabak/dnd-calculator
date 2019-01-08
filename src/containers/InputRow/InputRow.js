@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import Caret from '../../components/Caret/Caret';
-import NumerCell from '../../components/NumberCell/NumberCell';
+import NumberCell from '../../components/NumberCell/NumberCell';
+import Operator from '../../components/Operator/Operator';
 
 
 const Row = styled.div`
@@ -12,12 +13,33 @@ const Row = styled.div`
 `;
 
 
+
 const InputRow = (props) => {
+
+    let mathRow = props.values.map(elem => {
+        switch (elem.type) {
+            case 'number':
+                return <NumberCell 
+                handleInput={props.handleInput}
+                inputId={elem.id}
+                key={elem.id}
+                value={elem.value} />
+            case 'operator':
+                return <Operator
+                        operatorId={elem.id}
+                        key={elem.id}
+                        operator={elem.value} />
+            default:
+                return null;
+        }
+        
+    });
+
     return (
         <Row tabIndex="0" 
-            onKeyDown={(event, id) => props.keyDown(event, props.id)}
-            id={props.id}>{props.mathRow}
-            <NumerCell />
+            onKeyDown={(event, id) => props.keyDown(event, props.rowId)}
+            rowId={props.rowId}>
+                {mathRow}
         </Row>
     );
 }

@@ -6,7 +6,6 @@ const StyledNumber = styled.div`
     height: 40px;
     padding: 10px;
     background-color: blue;
- 
     text-align: center; 
 `;
 
@@ -20,9 +19,20 @@ const Input = styled.input`
 const Cell = (props) => {
     return (
         <StyledNumber>
-            <Input />
+            <Input autoFocus={true} value={props.value} onChange={(event, id) => props.handleInput(event, props.inputId)} />
         </StyledNumber>
     );
 }
- 
+
 export default Cell;
+// class Cell extends Component {
+//     render() {
+//         return (
+//             <StyledNumber>
+//                 <Input autoFocus={true} onChange={null} />
+//             </StyledNumber>
+//         );
+//     }
+// }
+
+// export default Cell;
