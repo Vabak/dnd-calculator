@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 
 import InputRow from '../InputRow/InputRow';
 
-const RegNumbers = /[0-9]/;
-const RegSigns = /[/\+\-\*]/;
+const OPERATORS = ['/', '+', '-', '*'];
 
 class Calculator extends Component {
     state = {
@@ -15,13 +14,13 @@ class Calculator extends Component {
     }
 
     handleInputChange = (event, id) => {
-        console.log(RegNumbers.test(event.target.value), RegSigns.test(event.target.value) )
-        if (RegNumbers.test(event.target.value)) {
+        if (event.target.value.match(/[-0-9]+/)) {
             this.inputChangeNumber(event, id);
-        } else if (RegSigns.test(event.target.value)) {
+        } else if (OPERATORS.includes(event.target.value)) {
             this.createMathOperator(event.target.value)
-        }
-        return
+        } else if (event.target.value === '')
+        this.inputChangeNumber(event, id); 
+        
     }
 
     inputChangeNumber = (event, id) => {
@@ -40,13 +39,12 @@ class Calculator extends Component {
                 data: newData,
             }
         })
-        // this.setState({ inputValue: event.target.value })
     }
 
     handleKeyDown = (event, id) => {
-        if (RegNumbers.test(event.key)) {
+        if (event.key.match(/[-0-9]+/)) {
             this.checkNum(event.key, id);
-        } else if (RegSigns.test(event.key)) {
+        } else if (OPERATORS.includes(event.key)) {
             
         }
         return
@@ -54,17 +52,18 @@ class Calculator extends Component {
 
     checkNum = (num, id) => {
             if (this.state.row.data.length === 0) {
-                this.createNumber(num);
+                this.createNumber();
                 return;
             }
         return;
     }
 
-    createNumber = (num) => {
+    createNumber = () => {
+        console.log('createNumber')
         let newData = [...this.state.row.data];
         const newNumber = { 
             id: Date.now(),
-            value: num,
+            value: '',
             type: 'number',
         };
         newData.push(newNumber);
@@ -78,7 +77,6 @@ class Calculator extends Component {
     }
     
     createMathOperator = (operator) => {
-        console.log('math')
         let newData = [...this.state.row.data];
         const newOperator = { 
             id: Date.now(),
