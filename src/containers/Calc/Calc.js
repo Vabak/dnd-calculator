@@ -14,12 +14,13 @@ class Calculator extends Component {
     }
 
     handleInputChange = (event, id) => {
-        if (event.target.value.match(/[-0-9]+/)) {
+        console.log(event.target.value)
+        if (OPERATORS.includes(event.target.value.slice(-1))) {
+            this.createMathOperator(event.target.value) 
+        } else if (event.target.value.match(/[-0-9]+/) || event.target.value === '') {
             this.inputChangeNumber(event, id);
-        } else if (OPERATORS.includes(event.target.value)) {
-            this.createMathOperator(event.target.value)
-        } else if (event.target.value === '')
-        this.inputChangeNumber(event, id); 
+        } 
+        
         
     }
 
