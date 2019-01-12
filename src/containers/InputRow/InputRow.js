@@ -24,6 +24,8 @@ const InputRow = (props) => {
                 handleInput={props.handleInput}
                 inputId={elem.id}
                 key={elem.id}
+                focus={true}
+                read={false}
                 value={elem.value} />
             case 'operator':
                 return <Operator
@@ -42,6 +44,8 @@ const InputRow = (props) => {
             ref={props.inputRef}
             rowId={props.rowId}>
                 {mathRow}
+                <Operator operator={'='} />
+                <NumberCell value={props.eval} focus={false} read={true} handleInput={null} />
         </Row>
     );
 }

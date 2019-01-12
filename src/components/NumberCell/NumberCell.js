@@ -20,7 +20,12 @@ const Input = styled.input`
 const Cell = (props) => {
     return (
         <StyledNumber>
-            <Input autoFocus={true} value={props.value} onKeyDown={e => e.stopPropagation()} onChange={(event, id) => {props.handleInput(event, props.inputId)}} />
+            <Input 
+                autoFocus={props.focus} 
+                value={props.value} 
+                onKeyDown={e => e.stopPropagation()}
+                onChange={(event, id) => {props.handleInput(event, props.inputId)}}
+                readOnly={props.read} />
         </StyledNumber>
     );
 }

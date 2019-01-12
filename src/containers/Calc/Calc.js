@@ -10,9 +10,15 @@ class Calculator extends Component {
             id: Date.now(),
             checked: false,
             data: [],
+            eval: 0,
         }
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.row.data !== this.state.row.data) {
+            this.calculation()
+        }
+    }
     handleInputChange = (event, id) => {
         if (OPERATORS.includes(event.target.value.slice(-1))) {
             this.checkOperator(event.target.value.slice(-1)) 
@@ -136,6 +142,23 @@ class Calculator extends Component {
             }
         })
     }
+
+    calculation() {
+        if (this.state.row.data.length === 0) return;
+        let newEval = 0;
+        let equation = '';
+        this.state.row.data.map(el => {
+            equation = equation + el.value;
+        })
+        newEval = eval(equation);
+        this.setState({
+            ...this.state,
+            row: {
+                ...this.state.row,
+                eval: newEval
+        }})
+    }
+
     render() {
         return (
             <div>
@@ -144,7 +167,8 @@ class Calculator extends Component {
                 handleInput={this.handleInputChange}
                 keyDown={this.handleKeyDown} 
                 rowId={this.state.row.id}
-                values={this.state.row.data} />
+                values={this.state.row.data}
+                eval={this.state.row.eval} />
             </div>
 
         );
