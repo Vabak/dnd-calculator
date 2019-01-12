@@ -39,6 +39,7 @@ const InputRow = (props) => {
     return (
         <Row tabIndex="0" 
             onKeyDown={(event, id) => props.keyDown(event, props.rowId)}
+            ref={props.inputRef}
             rowId={props.rowId}>
                 {mathRow}
         </Row>
