@@ -14,15 +14,21 @@ class Calculator extends Component {
     }
 
     handleInputChange = (event, id) => {
-    event.stopPropagation();
         if (OPERATORS.includes(event.target.value.slice(-1))) {
-            this.createMathOperator(event.target.value.slice(-1)) 
-            // event.target.blur();
+            this.checkOperator(event.target.value.slice(-1)) 
+            this.inputFocus()
         } else if (event.target.value.match(/[0-9]+/) || event.target.value === '') {
             this.inputChangeNumber(event, id);
         }    
     }
 
+    setInputRef = element => {
+        this.inputElement = element;
+    };
+
+    inputFocus() {
+        this.inputElement.focus();
+    }
     inputChangeNumber = (event, id) => {
         let newValueIndex = null;
         const newValue = this.state.row.data.find((elem, index) => {
@@ -46,6 +52,8 @@ class Calculator extends Component {
             this.checkNum(event.key, id);
         } else if (event.key === 'Backspace') {
             this.deleteElement()
+        } else if (OPERATORS.includes(event.key)) {
+            this.checkOperator(event.key)
         }
         return
     }
@@ -63,6 +71,13 @@ class Calculator extends Component {
 
     }
 
+    checkOperator = (operator) => {
+        if (this.state.row.data[this.state.row.data.length-1].type === 'number') {
+            this.createMathOperator(operator);
+        } else if (this.state.row.data[this.state.row.data.length-1].type === 'operator') {
+            this.replaceOperator(operator)
+        }
+    }
     checkNum = (num, id) => {
         // if row is empty or last element is operator
             if (this.state.row.data.length === 0 || this.state.row.data[this.state.row.data.length-1].type === 'operator') {
@@ -105,26 +120,27 @@ class Calculator extends Component {
             }
         })
     }
-
-    // getInputRef = (node) => {
-    //     this.inputEl = node;
-    // }
-    // checkNum = (num, id) => {
-    //     let newRowIndex;
-    //     const newRow = this.state.rows.find((row, idx) => {
-    //         newRowIndex = idx;
-    //         return row.id === id
-    //     });
-    //     newRow.data += num;
-    //     const newRows = [...this.state.rows];
-    //     newRows[newRowIndex] = newRow;
-    //     this.setState({ rows: newRows })
-    // }
-
+    replaceOperator = (operator) => {
+        let newData = [...this.state.row.data];
+        const newOperator = { 
+            id: Date.now(),
+            value: operator,
+            type: 'operator'
+        };
+        newData[newData.length-1] = newOperator;
+        this.setState({
+            ...this.state,
+            row: {
+                ...this.state.row,
+                data: newData,
+            }
+        })
+    }
     render() {
         return (
             <div>
                 <InputRow 
+                inputRef={this.setInputRef}
                 handleInput={this.handleInputChange}
                 keyDown={this.handleKeyDown} 
                 rowId={this.state.row.id}
