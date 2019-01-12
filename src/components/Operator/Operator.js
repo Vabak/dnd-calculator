@@ -7,6 +7,7 @@ const StyledOperator = styled.div`
     padding: 10px;
     background-color: blue;
     text-align: center; 
+    display: inline-block;
 `;
 
 const Operator = (props) => {

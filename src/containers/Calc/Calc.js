@@ -14,10 +14,10 @@ class Calculator extends Component {
     }
 
     handleInputChange = (event, id) => {
-        console.log(event.target.value)
         if (OPERATORS.includes(event.target.value.slice(-1))) {
-            this.createMathOperator(event.target.value) 
-        } else if (event.target.value.match(/[-0-9]+/) || event.target.value === '') {
+            this.createMathOperator(event.target.value.slice(-1)) 
+            // event.target.blur();
+        } else if (event.target.value.match(/[0-9]+/) || event.target.value === '') {
             this.inputChangeNumber(event, id);
         } 
         
@@ -43,7 +43,7 @@ class Calculator extends Component {
     }
 
     handleKeyDown = (event, id) => {
-        if (event.key.match(/[-0-9]+/)) {
+        if (event.key.match(/[0-9]+/)) {
             this.checkNum(event.key, id);
         } else if (OPERATORS.includes(event.key)) {
             
@@ -52,7 +52,9 @@ class Calculator extends Component {
     }
 
     checkNum = (num, id) => {
-            if (this.state.row.data.length === 0) {
+        // if row is empty or last element is operator
+            if (this.state.row.data.length === 0 || this.state.row.data[this.state.row.data.length-1].type === 'operator') {
+                console.log('createNumber')
                 this.createNumber();
                 return;
             }

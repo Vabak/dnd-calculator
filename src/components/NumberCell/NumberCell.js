@@ -6,7 +6,8 @@ const StyledNumber = styled.div`
     height: 40px;
     padding: 10px;
     background-color: blue;
-    text-align: center; 
+    display: inline-block;
+    margin: 0 10px;
 `;
 
 const Input = styled.input`

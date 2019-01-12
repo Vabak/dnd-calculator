@@ -10,6 +10,7 @@ const Row = styled.div`
     background-color: #f1f1f1;
     height: 120px;
     padding: 20px;
+    display: flex;
 `;
 
 
