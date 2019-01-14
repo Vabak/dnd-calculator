@@ -13,11 +13,8 @@ class Calculator extends Component {
             eval: 0,
         }
     }
-
     componentDidUpdate(prevProps, prevState) {
-        if (prevState.row.data !== this.state.row.data) {
-            this.calculation()
-        }
+        if(prevState.row.data !== this.state.row.data) this.calculation()
     }
     handleInputChange = (event, id) => {
         if (OPERATORS.includes(event.target.value.slice(-1))) {
@@ -25,6 +22,7 @@ class Calculator extends Component {
             this.inputFocus()
         } else if (event.target.value.match(/[0-9]+/) || event.target.value === '') {
             this.inputChangeNumber(event, id);
+            // this.calculation()
         }    
     }
 
@@ -57,9 +55,9 @@ class Calculator extends Component {
         if (event.key.match(/[0-9]+/)) {
             this.checkNum(event.key, id);
         } else if (event.key === 'Backspace') {
-            this.deleteElement()
+            this.deleteElement();
         } else if (OPERATORS.includes(event.key)) {
-            this.checkOperator(event.key)
+            this.checkOperator(event.key);
         }
         return
     }
@@ -74,7 +72,6 @@ class Calculator extends Component {
                 data: newData,
             }
         })
-
     }
 
     checkOperator = (operator) => {
@@ -144,18 +141,23 @@ class Calculator extends Component {
     }
 
     calculation() {
-        if (this.state.row.data.length === 0) return;
-        let newEval = 0;
+        if (this.state.row.data.length === 0) return; 
         let equation = '';
         this.state.row.data.map(el => {
             equation = equation + el.value;
         })
-        newEval = eval(equation);
+        if (equation === '') equation = 0;
+        if (OPERATORS.includes(equation[equation.length-1])) {
+            return;
+        }
+        const newEval = (string) => {
+            return new Function('return ' + string)();
+          }
         this.setState({
             ...this.state,
             row: {
                 ...this.state.row,
-                eval: newEval
+                eval: newEval(equation)
         }})
     }
 
