@@ -35,8 +35,6 @@ const Cell = (props) => {
                 </StyledNumber>)}
         </Draggable>
     );
-
-
 }
 
 export default Cell;

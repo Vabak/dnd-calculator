@@ -5,6 +5,7 @@ const StyledOperator = styled.div`
     width: 40px;
     height: 40px;
     padding: 10px;
+    margin: 0 10px;
     background-color: blue;
     text-align: center; 
     display: inline-block;

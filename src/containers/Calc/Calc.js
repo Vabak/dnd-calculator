@@ -8,7 +8,7 @@ const OPERATORS = ['/', '+', '-', '*'];
 class Calculator extends Component {
     state = {
         row: {
-            id: Date.now(),
+            id: Date.now().toString(),
             checked: false,
             data: [],
             eval: 0,
@@ -94,7 +94,7 @@ class Calculator extends Component {
     createNumber = () => {
         let newData = [...this.state.row.data];
         const newNumber = {
-            id: Date.now(),
+            id: Date.now().toString(),
             value: '',
             type: 'number',
         };
@@ -166,6 +166,29 @@ class Calculator extends Component {
     // Drag and Drop
 
     onDragEnd = result => {
+        const { destination, source, draggableId } = result;
+
+        if (!destination) return;
+
+        if (
+            destination.droppableId === source.draggableId &&
+            destination.index === source.index
+        ) {
+            return;
+        }
+        const newData = [...this.state.row.data];
+        const srcElement = this.state.row.data[source.index]
+        console.log(srcElement)
+        newData.splice(source.index, 1);
+        newData.splice(destination.index, 0, srcElement);
+        
+
+        this.setState(this.setState({
+            ...this.state,
+            row: {
+                ...this.state.row,
+                data: newData
+        }}))
 
     }
     render() {
