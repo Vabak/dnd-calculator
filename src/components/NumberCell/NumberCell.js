@@ -6,7 +6,7 @@ const StyledNumber = styled.div`
     width: 40px;
     height: 40px;
     padding: 10px;
-    background-color: blue;
+    background-color: ${props => props.isDragging ? 'lightgreen' : 'lightblue'};
     display: inline-block;
     margin: 0 10px;
 `;
@@ -21,8 +21,9 @@ const Input = styled.input`
 const Cell = (props) => {
     return (
         <Draggable draggableId={props.inputId} index={props.index}>
-            {(provided) => (
+            {(provided, snapshot) => (
                 <StyledNumber
+                isDragging={snapshot.isDragging}
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}>
