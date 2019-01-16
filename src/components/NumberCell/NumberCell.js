@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Draggable } from 'react-beautiful-dnd';
 
 const StyledNumber = styled.div`
     width: 40px;
@@ -19,26 +20,23 @@ const Input = styled.input`
 
 const Cell = (props) => {
     return (
-        <StyledNumber>
-            <Input 
-                autoFocus={props.focus} 
-                value={props.value} 
-                onKeyDown={e => e.stopPropagation()}
-                onChange={(event, id) => {props.handleInput(event, props.inputId)}}
-                readOnly={props.read} />
-        </StyledNumber>
+        <Draggable draggableId={props.inputId} index={props.index}>
+            {(provided) => (
+                <StyledNumber
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}>
+                    <Input
+                        autoFocus={props.focus}
+                        value={props.value}
+                        onKeyDown={e => e.stopPropagation()}
+                        onChange={(event, id) => { props.handleInput(event, props.inputId) }}
+                        readOnly={props.read} />
+                </StyledNumber>)}
+        </Draggable>
     );
+
+
 }
 
 export default Cell;
-// class Cell extends Component {
-//     render() {
-//         return (
-//             <StyledNumber>
-//                 <Input autoFocus={true} onChange={null} />
-//             </StyledNumber>
-//         );
-//     }
-// }
-
-// export default Cell;

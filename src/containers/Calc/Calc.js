@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { DragDropContext } from 'react-beautiful-dnd';
 
 import InputRow from '../InputRow/InputRow';
 
@@ -18,21 +19,21 @@ class Calculator extends Component {
     }
     handleInputChange = (event, id) => {
         if (OPERATORS.includes(event.target.value.slice(-1))) {
-            this.checkOperator(event.target.value.slice(-1)) 
-            this.inputFocus()
+            this.checkOperator(event.target.value.slice(-1))
+            // this.inputFocus()
         } else if (event.target.value.match(/[0-9]+/) || event.target.value === '') {
             this.inputChangeNumber(event, id);
             // this.calculation()
         }    
     }
 
-    setInputRef = element => {
-        this.inputElement = element;
-    };
+    // setInputRef = element => {
+    //     this.inputElement = element;
+    // };
 
-    inputFocus() {
-        this.inputElement.focus();
-    }
+    // inputFocus() {
+    //     this.inputElement.focus();
+    // }
     inputChangeNumber = (event, id) => {
         let newValueIndex = null;
         const newValue = this.state.row.data.find((elem, index) => {
@@ -75,24 +76,24 @@ class Calculator extends Component {
     }
 
     checkOperator = (operator) => {
-        if (this.state.row.data[this.state.row.data.length-1].type === 'number') {
+        if (this.state.row.data[this.state.row.data.length - 1].type === 'number') {
             this.createMathOperator(operator);
-        } else if (this.state.row.data[this.state.row.data.length-1].type === 'operator') {
+        } else if (this.state.row.data[this.state.row.data.length - 1].type === 'operator') {
             this.replaceOperator(operator)
         }
     }
     checkNum = (num, id) => {
         // if row is empty or last element is operator
-            if (this.state.row.data.length === 0 || this.state.row.data[this.state.row.data.length-1].type === 'operator') {
-                this.createNumber();
-                return;
-            }
+        if (this.state.row.data.length === 0 || this.state.row.data[this.state.row.data.length - 1].type === 'operator') {
+            this.createNumber();
+            return;
+        }
         return;
     }
 
     createNumber = () => {
         let newData = [...this.state.row.data];
-        const newNumber = { 
+        const newNumber = {
             id: Date.now(),
             value: '',
             type: 'number',
@@ -109,7 +110,7 @@ class Calculator extends Component {
 
     createMathOperator = (operator) => {
         let newData = [...this.state.row.data];
-        const newOperator = { 
+        const newOperator = {
             id: Date.now(),
             value: operator,
             type: 'operator'
@@ -125,12 +126,12 @@ class Calculator extends Component {
     }
     replaceOperator = (operator) => {
         let newData = [...this.state.row.data];
-        const newOperator = { 
+        const newOperator = {
             id: Date.now(),
             value: operator,
             type: 'operator'
         };
-        newData[newData.length-1] = newOperator;
+        newData[newData.length - 1] = newOperator;
         this.setState({
             ...this.state,
             row: {
@@ -146,6 +147,8 @@ class Calculator extends Component {
         this.state.row.data.map(el => {
             equation = equation + el.value;
         })
+
+        // still not work
         if (equation === '') equation = 0;
         if (OPERATORS.includes(equation[equation.length-1])) {
             return;
@@ -160,18 +163,25 @@ class Calculator extends Component {
                 eval: newEval(equation)
         }})
     }
+    // Drag and Drop
 
+    onDragEnd = result => {
+
+    }
     render() {
         return (
-            <div>
-                <InputRow 
-                inputRef={this.setInputRef}
-                handleInput={this.handleInputChange}
-                keyDown={this.handleKeyDown} 
-                rowId={this.state.row.id}
-                values={this.state.row.data}
-                eval={this.state.row.eval} />
-            </div>
+            <DragDropContext onDragEnd={this.onDragEnd}>
+                <div>
+                    <InputRow
+                        // inputRef={this.setInputRef}
+                        handleInput={this.handleInputChange}
+                        keyDown={this.handleKeyDown}
+                        rowId={this.state.row.id}
+                        values={this.state.row.data}
+                        eval={this.state.row.eval} />
+                </div>
+            </DragDropContext>
+
 
         );
     }
