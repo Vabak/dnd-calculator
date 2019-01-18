@@ -29,6 +29,8 @@ class Calculator extends Component {
         }    
     }
 
+    
+
     // setInputRef = element => {
     //     this.inputElement = element;
     // };
@@ -144,18 +146,19 @@ class Calculator extends Component {
     }
 
     calculation() {
+        let equation = '';
+
+        if (this.state.row.data.length !== 0){
+        this.state.row.data.map(el => {
+            equation = equation + el.value;
+        })} else {
+            equation = 0;
+        }
         if (OPERATORS.includes(equation[equation.length-1])) {
             return;
         }
-        if (this.state.row.data.length !== 0){
-        let equation = '';
-        this.state.row.data.map(el => {
-            equation = equation + el.value;
-        })}
-
         // still not work
         const newEval = (string) => {
-            // if (string === '') return 0;
             return new Function('return ' + string)();
           }
         this.setState({
