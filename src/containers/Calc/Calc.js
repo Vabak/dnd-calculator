@@ -12,7 +12,8 @@ class Calculator extends Component {
             checked: false,
             data: [],
             eval: 0,
-        }
+        },
+        rowIds: ['row-1'],
     }
 
     componentDidUpdate(prevProps, prevState) {
