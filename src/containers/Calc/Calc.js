@@ -14,12 +14,39 @@ class Calculator extends Component {
             },
         },
         rowIds: ['row-1'],
-        elements: {}
+        elements: {},
     }
 
     // componentDidUpdate(prevProps, prevState) {
     //     if (prevState.row.data !== this.state.row.data) this.calculation()
     // }
+    handleKeyDown = (event, id) => {
+        const validatedInput = this.inputValidation(event.key)
+        switch (validatedInput) {
+            case 'number':
+                this.createNumber(id)
+                break;
+            case 'operator':
+                this.createMathOperator(event.key, id)
+                break;
+            case 'Backspace':
+                this.deleteElement()
+                break;
+            case 'Enter':
+                this.createRow();
+                break;
+            default:
+                break;
+        }
+    }
+
+    inputValidation = (value) => {
+        if (value.match(/[0-9]+/)) return 'number';
+        if (OPERATORS.includes(value)) return 'operator';
+        if (value === 'Backspace') return 'Backspace';
+        if (value === 'Enter') return 'Enter';
+        return;
+    }
 
     handleInputChange = (event, id) => {
         if (OPERATORS.includes(event.target.value.slice(-1))) {
@@ -41,13 +68,7 @@ class Calculator extends Component {
     //     this.inputElement.focus();
     // }
 
-    inputValidation = (value) => {
-        if (value.match(/[0-9]+/)) return 'number';
-        if (OPERATORS.includes(value)) return 'operator';
-        if (value === 'Backspace') return 'Backspace';
-        if (value === 'Enter') return 'Enter';
-        return;
-    }
+
 
     inputChangeNumber = (event, id) => {
         let newValueIndex = null;
@@ -67,24 +88,6 @@ class Calculator extends Component {
         })
     }
 
-    handleKeyDown = (event) => {
-        const validatedInput = this.inputValidation(event.key)
-        switch (validatedInput) {
-            case 'number':
-                this.createNumber(event.key)
-                break;
-            case 'operator':
-                this.createMathOperator(event.key)
-                break;
-            case 'Backspace':
-                this.deleteElement()
-                break;
-            case 'Enter':
-                this.createRow();
-                break;
-            default:
-                break;
-        }
 
         deleteElement() {
             let newData = [...this.state.row.data];
@@ -114,8 +117,8 @@ class Calculator extends Component {
         //     return;
         // }
 
-        createNumber = () => {
-            let newData = [...this.state.row.data];
+        createNumber = (rowId) => {
+            let newData = [...this.state.rowId.elementsOrder];
             const newNumber = {
                 id: Date.now().toString(),
                 value: '',
