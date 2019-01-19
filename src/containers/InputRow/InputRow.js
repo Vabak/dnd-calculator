@@ -9,7 +9,7 @@ import Operator from '../../components/Operator/Operator';
 
 const Row = styled.div`
     width: 100%;
-    background-color: ${props => props.isDraggingOver ? 'darkgrey' : '#f1f1f1'} 
+    background-color: ${props => props.isDraggingOver ? 'darkgrey' : '#f1f1f1'};
     height: 120px;
     padding: 20px;
     display: flex;
@@ -19,23 +19,23 @@ const Row = styled.div`
 
 const InputRow = (props) => {
 
-    let mathRow = props.values.map((elem, index) => {
-        switch (elem.type) {
+    let mathRow = props.elementsOrder.map((elemId, index) => {
+        switch (props.elements.elemId.type) {
             case 'number':
                 return <NumberCell
                     handleInput={props.handleInput}
-                    inputId={elem.id}
+                    inputId={elemId}
                     index={index}
-                    key={elem.id}
+                    key={elemId}
                     focus={true}
                     read={false}
-                    value={elem.value} />
+                    value={props.elements.elemId.value} />
             case 'operator':
                 return <Operator
                     index={index}
-                    operatorId={elem.id}
-                    key={elem.id}
-                    operator={elem.value} />
+                    operatorId={elemId}
+                    key={elemId}
+                    operator={props.elements.elemId.value} />
             default:
                 return null;
         }

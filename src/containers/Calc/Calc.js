@@ -7,18 +7,19 @@ const OPERATORS = ['/', '+', '-', '*'];
 
 class Calculator extends Component {
     state = {
-        row: {
-            id: Date.now().toString(),
-            checked: false,
-            data: [],
-            eval: 0,
+        rows: {
+            'row-1': {
+                elementsOrder: [],
+                eval: 0,
+            },
         },
         rowIds: ['row-1'],
+        elements: {}
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if(prevState.row.data !== this.state.row.data) this.calculation()
-    }
+    // componentDidUpdate(prevProps, prevState) {
+    //     if (prevState.row.data !== this.state.row.data) this.calculation()
+    // }
 
     handleInputChange = (event, id) => {
         if (OPERATORS.includes(event.target.value.slice(-1))) {
@@ -27,10 +28,10 @@ class Calculator extends Component {
         } else if (event.target.value.match(/[0-9]+/) || event.target.value === '') {
             this.inputChangeNumber(event, id);
             // this.calculation()
-        }    
+        }
     }
 
-    
+
 
     // setInputRef = element => {
     //     this.inputElement = element;
@@ -39,6 +40,15 @@ class Calculator extends Component {
     // inputFocus() {
     //     this.inputElement.focus();
     // }
+
+    inputValidation = (value) => {
+        if (value.match(/[0-9]+/)) return 'number';
+        if (OPERATORS.includes(value)) return 'operator';
+        if (value === 'Backspace') return 'Backspace';
+        if (value === 'Enter') return 'Enter';
+        return;
+    }
+
     inputChangeNumber = (event, id) => {
         let newValueIndex = null;
         const newValue = this.state.row.data.find((elem, index) => {
@@ -57,163 +67,180 @@ class Calculator extends Component {
         })
     }
 
-    handleKeyDown = (event, id) => {
-        if (event.key.match(/[0-9]+/)) {
-            this.checkNum(event.key, id);
-        } else if (event.key === 'Backspace') {
-            this.deleteElement();
-        } else if (OPERATORS.includes(event.key)) {
-            this.checkOperator(event.key);
+    handleKeyDown = (event) => {
+        const validatedInput = this.inputValidation(event.key)
+        switch (validatedInput) {
+            case 'number':
+                this.createNumber(event.key)
+                break;
+            case 'operator':
+                this.createMathOperator(event.key)
+                break;
+            case 'Backspace':
+                this.deleteElement()
+                break;
+            case 'Enter':
+                this.createRow();
+                break;
+            default:
+                break;
         }
-        return
-    }
 
-    deleteElement() {
-        let newData = [...this.state.row.data];
-        newData.pop();
-        this.setState({
-            ...this.state,
-            row: {
-                ...this.state.row,
-                data: newData,
+        deleteElement() {
+            let newData = [...this.state.row.data];
+            newData.pop();
+            this.setState({
+                ...this.state,
+                row: {
+                    ...this.state.row,
+                    data: newData,
+                }
+            })
+        }
+
+        checkOperator = (operator) => {
+            if (this.state.row.data[this.state.row.data.length - 1].type === 'number') {
+                this.createMathOperator(operator);
+            } else if (this.state.row.data[this.state.row.data.length - 1].type === 'operator') {
+                this.replaceOperator(operator)
             }
-        })
-    }
-
-    checkOperator = (operator) => {
-        if (this.state.row.data[this.state.row.data.length - 1].type === 'number') {
-            this.createMathOperator(operator);
-        } else if (this.state.row.data[this.state.row.data.length - 1].type === 'operator') {
-            this.replaceOperator(operator)
         }
-    }
-    checkNum = (num, id) => {
-        // if row is empty or last element is operator
-        if (this.state.row.data.length === 0 || this.state.row.data[this.state.row.data.length - 1].type === 'operator') {
-            this.createNumber();
-            return;
-        }
-        return;
-    }
+        // checkNum = (num, id) => {
+        //     // if row is empty or last element is operator
+        //     if (this.state.row.data.length === 0 || this.state.row.data[this.state.row.data.length - 1].type === 'operator') {
+        //         this.createNumber();
+        //         return;
+        //     }
+        //     return;
+        // }
 
-    createNumber = () => {
-        let newData = [...this.state.row.data];
-        const newNumber = {
-            id: Date.now().toString(),
-            value: '',
-            type: 'number',
-        };
-        newData.push(newNumber);
-        this.setState({
-            ...this.state,
-            row: {
-                ...this.state.row,
-                data: newData,
+        createNumber = () => {
+            let newData = [...this.state.row.data];
+            const newNumber = {
+                id: Date.now().toString(),
+                value: '',
+                type: 'number',
+            };
+            newData.push(newNumber);
+            this.setState({
+                ...this.state,
+                row: {
+                    ...this.state.row,
+                    data: newData,
+                }
+            })
+        }
+
+        createMathOperator = (operator) => {
+            let newData = [...this.state.row.data];
+            const newOperator = {
+                id: Date.now(),
+                value: operator,
+                type: 'operator'
+            };
+            newData.push(newOperator);
+            this.setState({
+                ...this.state,
+                row: {
+                    ...this.state.row,
+                    data: newData,
+                }
+            })
+        }
+        replaceOperator = (operator) => {
+            let newData = [...this.state.row.data];
+            const newOperator = {
+                id: Date.now(),
+                value: operator,
+                type: 'operator'
+            };
+            newData[newData.length - 1] = newOperator;
+            this.setState({
+                ...this.state,
+                row: {
+                    ...this.state.row,
+                    data: newData,
+                }
+            })
+        }
+
+        calculation() {
+            let equation = '';
+
+            if (this.state.row.data.length !== 0) {
+                this.state.row.data.map(el => {
+                    equation = equation + el.value;
+                })
+            } else {
+                equation = 0;
             }
-        })
-    }
-
-    createMathOperator = (operator) => {
-        let newData = [...this.state.row.data];
-        const newOperator = {
-            id: Date.now(),
-            value: operator,
-            type: 'operator'
-        };
-        newData.push(newOperator);
-        this.setState({
-            ...this.state,
-            row: {
-                ...this.state.row,
-                data: newData,
+            if (OPERATORS.includes(equation[equation.length - 1])) {
+                return;
             }
-        })
-    }
-    replaceOperator = (operator) => {
-        let newData = [...this.state.row.data];
-        const newOperator = {
-            id: Date.now(),
-            value: operator,
-            type: 'operator'
-        };
-        newData[newData.length - 1] = newOperator;
-        this.setState({
-            ...this.state,
-            row: {
-                ...this.state.row,
-                data: newData,
+            // still not work
+            const newEval = (string) => {
+                return new Function('return ' + string)();
             }
-        })
-    }
-
-    calculation() {
-        let equation = '';
-
-        if (this.state.row.data.length !== 0){
-        this.state.row.data.map(el => {
-            equation = equation + el.value;
-        })} else {
-            equation = 0;
+            this.setState({
+                ...this.state,
+                row: {
+                    ...this.state.row,
+                    eval: newEval(equation)
+                }
+            })
         }
-        if (OPERATORS.includes(equation[equation.length-1])) {
-            return;
+        // Drag and Drop
+
+        onDragEnd = result => {
+            const { destination, source, draggableId } = result;
+
+            if (!destination) return;
+
+            if (
+                destination.droppableId === source.draggableId &&
+                destination.index === source.index
+            ) {
+                return;
+            }
+            const newData = [...this.state.row.data];
+            const srcElement = this.state.row.data[source.index];
+            newData.splice(source.index, 1);
+            newData.splice(destination.index, 0, srcElement);
+
+
+            this.setState(this.setState({
+                ...this.state,
+                row: {
+                    ...this.state.row,
+                    data: newData
+                }
+            }))
+
         }
-        // still not work
-        const newEval = (string) => {
-            return new Function('return ' + string)();
-          }
-        this.setState({
-            ...this.state,
-            row: {
-                ...this.state.row,
-                eval: newEval(equation)
-        }})
-    }
-    // Drag and Drop
 
-    onDragEnd = result => {
-        const { destination, source, draggableId } = result;
+        render() {
+            const rows = this.state.rowIds.map(rowId => (
+                <InputRow
+                    // inputRef={this.setInputRef}
+                    key={rowId}
+                    handleInput={this.handleInputChange}
+                    keyDown={this.handleKeyDown}
+                    rowId={rowId}
+                    elements={this.state.elements}
+                    eval={this.state.rows.rowId.eval}
+                    elementsOrder={this.state.rows.rowId.elementsOrder}
+                />
+            ))
+            return (
+                <DragDropContext onDragEnd={this.onDragEnd}>
+                    <div>
+                        {rows}
+                    </div>
+                </DragDropContext>
 
-        if (!destination) return;
 
-        if (
-            destination.droppableId === source.draggableId &&
-            destination.index === source.index
-        ) {
-            return;
+            );
         }
-        const newData = [...this.state.row.data];
-        const srcElement = this.state.row.data[source.index]
-        console.log(srcElement)
-        newData.splice(source.index, 1);
-        newData.splice(destination.index, 0, srcElement);
-        
-
-        this.setState(this.setState({
-            ...this.state,
-            row: {
-                ...this.state.row,
-                data: newData
-        }}))
-
     }
-    render() {
-        return (
-            <DragDropContext onDragEnd={this.onDragEnd}>
-                <div>
-                    <InputRow
-                        // inputRef={this.setInputRef}
-                        handleInput={this.handleInputChange}
-                        keyDown={this.handleKeyDown}
-                        rowId={this.state.row.id}
-                        values={this.state.row.data}
-                        eval={this.state.row.eval} />
-                </div>
-            </DragDropContext>
 
-
-        );
-    }
-}
-
-export default Calculator;
+    export default Calculator;
