@@ -4,6 +4,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import InputRow from '../InputRow/InputRow';
 
 const OPERATORS = ['/', '+', '-', '*'];
+const NUMBERS = /^\d*$/
 
 class Calculator extends Component {
     state = {
@@ -16,7 +17,7 @@ class Calculator extends Component {
         },
         rowIds: ['row-1'],
         elements: {},
-        counter: 0
+        counter: 2
     }
 
     // componentDidUpdate(prevProps, prevState) {
@@ -32,9 +33,8 @@ class Calculator extends Component {
     }
     handleInputChange = (event, id) => {
         const value = event.target.value;
-
-        if (this.inputValidation(value) === 'number') {
-            this.inputChangeNumber(value, id)
+        if (this.inputValidation(value) === 'number') {            
+            this.handleChangeNumber(value, id)
         }
 
     }
@@ -50,28 +50,23 @@ class Calculator extends Component {
     // }
 
     inputValidation = (value) => {
-        if (value.match(/[0-9]+/)) return 'number';
-        if (OPERATORS.includes(value)) return 'operator';
+        if (NUMBERS.test(value)) return 'number';
+        if (OPERATORS.includes(value) || value.slice(-1)) return 'operator';
         if (value === 'Backspace') return 'Backspace';
         if (value === 'Enter') return 'Enter';
         return;
     }
 
-    inputChangeNumber = (event, id) => {
-        let newValueIndex = null;
-        const newValue = this.state.row.data.find((elem, index) => {
-            newValueIndex = index
-            return elem.id === id;
-        })
-        newValue.value = event.target.value;
-        let newData = [...this.state.row.data];
-        newData.newValueIndex = newValue;
+    handleChangeNumber = (value, id) => {
+        let newElements = {...this.state.elements}
+        const newElement = newElements[id];
+        newElement.value = value;
+        newElements = {
+            ...newElements,
+            [id] : newElement
+        }
         this.setState({
-            ...this.state,
-            row: {
-                ...this.state.row,
-                data: newData,
-            }
+            elements: newElements
         })
     }
 
@@ -121,21 +116,23 @@ class Calculator extends Component {
         const newElement = {
             id: newElementId,
             type: 'number',
-            value: num,
+            value: '',
         }
-        
         this.setState({
             ...this.state,
             rows: {
+                ...this.state.rows,
                 [rowId]: { 
-                    ...this.state.rows[rowId],
+                    // ...this.state.rows[rowId],
                     elementsOrder: newElementsOrder,
                 }
             },
             elements: {
+                ...this.state.elements,
                 [newElementId]: newElement,
             }
         })
+        
     }
 
     createMathOperator = (operator) => {
@@ -184,9 +181,9 @@ class Calculator extends Component {
         if (OPERATORS.includes(equation[equation.length - 1])) {
             return;
         }
-        // still not work
+
         const newEval = (string) => {
-            return new Function('return ' + string)();
+            return eval(string);
         }
         this.setState({
             ...this.state,
