@@ -20,7 +20,7 @@ const Row = styled.div`
 const InputRow = (props) => {
 
     let mathRow = props.elementsOrder.map((elemId, index) => {
-        switch (props.elements.elemId.type) {
+        switch (props.elements[elemId].type) {
             case 'number':
                 return <NumberCell
                     handleInput={props.handleInput}
@@ -29,13 +29,13 @@ const InputRow = (props) => {
                     key={elemId}
                     focus={true}
                     read={false}
-                    value={props.elements.elemId.value} />
+                    value={props.elements[elemId].value} />
             case 'operator':
                 return <Operator
                     index={index}
                     operatorId={elemId}
                     key={elemId}
-                    operator={props.elements.elemId.value} />
+                    operator={props.elements[elemId].value} />
             default:
                 return null;
         }
