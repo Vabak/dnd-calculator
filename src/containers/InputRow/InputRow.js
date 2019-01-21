@@ -29,6 +29,7 @@ const InputRow = (props) => {
                     key={elemId}
                     focus={true}
                     read={false}
+                    rowId={props.rowId}
                     value={props.elements[elemId].value} />
             case 'operator':
                 return <Operator

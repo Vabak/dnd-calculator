@@ -9,7 +9,7 @@ const NUMBERS = /^\d*$/
 class Calculator extends Component {
     state = {
         rows: {
-            'row-1': { 
+            'row-1': {
                 id: 'row-1',
                 elementsOrder: [],
                 eval: 0,
@@ -17,7 +17,7 @@ class Calculator extends Component {
         },
         rowIds: ['row-1'],
         elements: {},
-        counter: 2
+        counter: 1
     }
 
     // componentDidUpdate(prevProps, prevState) {
@@ -29,14 +29,17 @@ class Calculator extends Component {
         this.setState({
             counter: newCounter
         });
-        return this.state.counter;
+        return newCounter;
     }
-    handleInputChange = (event, id) => {
+
+    handleInputChange = (event, id, rowId) => {
         const value = event.target.value;
-        if (this.inputValidation(value) === 'number') {            
+        if (this.inputValidation(value) === 'number') {
             this.handleChangeNumber(value, id)
         }
-
+        if (this.inputValidation(value) === 'operator') {
+            this.createMathOperator(value.slice(-1), id, rowId)
+        }
     }
 
 
@@ -51,19 +54,19 @@ class Calculator extends Component {
 
     inputValidation = (value) => {
         if (NUMBERS.test(value)) return 'number';
-        if (OPERATORS.includes(value) || value.slice(-1)) return 'operator';
+        if (OPERATORS.includes(value) || OPERATORS.includes(value.slice(-1))) return 'operator';
         if (value === 'Backspace') return 'Backspace';
         if (value === 'Enter') return 'Enter';
         return;
     }
 
     handleChangeNumber = (value, id) => {
-        let newElements = {...this.state.elements}
+        let newElements = { ...this.state.elements }
         const newElement = newElements[id];
         newElement.value = value;
         newElements = {
             ...newElements,
-            [id] : newElement
+            [id]: newElement
         }
         this.setState({
             elements: newElements
@@ -77,7 +80,7 @@ class Calculator extends Component {
                 this.createNumber(event.key, rowId)
                 break;
             case 'operator':
-                this.createMathOperator(event.key, rowId)
+                this.createMathOperator(event.key, null, rowId)
                 break;
             case 'Backspace':
                 this.deleteElement()
@@ -89,26 +92,28 @@ class Calculator extends Component {
                 break;
         }
     }
+
     deleteElement() {
     }
-
-    checkOperator = (operator) => {
-        if (this.state.row.data[this.state.row.data.length - 1].type === 'number') {
-            this.createMathOperator(operator);
-        } else if (this.state.row.data[this.state.row.data.length - 1].type === 'operator') {
-            this.replaceOperator(operator)
+    createRow() {
+        const newRowId = 'row-' + this.getCounter();
+        const newRowIds = Array.from(this.state.rowIds);
+        newRowIds.push(newRowId);
+        const newRow = {
+            id: newRowId,
+            elementsOrder: [],
+            eval: 0,
         }
+        this.setState({
+            rowIds: newRowIds,
+            rows: {
+                ...this.state.rows,
+                [newRowId]: newRow,
+            }
+        });
     }
-    // checkNum = (num, id) => {
-    //     // if row is empty or last element is operator
-    //     if (this.state.row.data.length === 0 || this.state.row.data[this.state.row.data.length - 1].type === 'operator') {
-    //         this.createNumber();
-    //         return;
-    //     }
-    //     return;
-    // }
-
     createNumber = (num, rowId) => {
+        // if ()
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
         const newElementId = Date.now().toString();
 
@@ -119,10 +124,9 @@ class Calculator extends Component {
             value: '',
         }
         this.setState({
-            ...this.state,
             rows: {
                 ...this.state.rows,
-                [rowId]: { 
+                [rowId]: {
                     // ...this.state.rows[rowId],
                     elementsOrder: newElementsOrder,
                 }
@@ -132,41 +136,48 @@ class Calculator extends Component {
                 [newElementId]: newElement,
             }
         })
-        
     }
 
-    createMathOperator = (operator) => {
-        let newData = [...this.state.row.data];
-        const newOperator = {
-            id: Date.now(),
+    createMathOperator = (operator, inputId, rowId) => {
+        const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
+        const newElementId = Date.now().toString();
+
+        newElementsOrder.push(newElementId);
+        const newElement = {
+            id: newElementId,
+            type: 'operator',
             value: operator,
-            type: 'operator'
-        };
-        newData.push(newOperator);
+        }
         this.setState({
             ...this.state,
-            row: {
-                ...this.state.row,
-                data: newData,
+            rows: {
+                ...this.state.rows,
+                [rowId]: {
+                    elementsOrder: newElementsOrder,
+                }
+            },
+            elements: {
+                ...this.state.elements,
+                [newElementId]: newElement,
             }
         })
     }
-    replaceOperator = (operator) => {
-        let newData = [...this.state.row.data];
-        const newOperator = {
-            id: Date.now(),
-            value: operator,
-            type: 'operator'
-        };
-        newData[newData.length - 1] = newOperator;
-        this.setState({
-            ...this.state,
-            row: {
-                ...this.state.row,
-                data: newData,
-            }
-        })
-    }
+    // replaceOperator = (operator) => {
+    //     let newData = [...this.state.row.data];
+    //     const newOperator = {
+    //         id: Date.now(),
+    //         value: operator,
+    //         type: 'operator'
+    //     };
+    //     newData[newData.length - 1] = newOperator;
+    //     this.setState({
+    //         ...this.state,
+    //         row: {
+    //             ...this.state.row,
+    //             data: newData,
+    //         }
+    //     })
+    // }
 
     calculation() {
         let equation = '';
