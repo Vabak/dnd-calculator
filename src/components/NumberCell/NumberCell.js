@@ -23,6 +23,7 @@ const Cell = (props) => {
         <Draggable draggableId={props.inputId} index={props.index}>
             {(provided, snapshot) => (
                 <StyledNumber
+                onClick={(rowId, id) => props.addCaret(props.rowId, props.inputId)}
                 isDragging={snapshot.isDragging}
                 ref={provided.innerRef}
                 {...provided.draggableProps}

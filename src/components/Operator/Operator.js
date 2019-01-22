@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Draggable } from 'react-beautiful-dnd'
 
 const StyledOperator = styled.div`
     width: 40px;
@@ -13,7 +14,14 @@ const StyledOperator = styled.div`
 
 const Operator = (props) => {
     return (
-        <StyledOperator>{props.operator}</StyledOperator>
+        <Draggable draggableId={props.operatorId} index={props.index} isDragDisabled={true}>
+        {(provided, snapshot) => (
+        <StyledOperator
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}>{props.operator}</StyledOperator>)}
+        </Draggable>
+
     );
 }
  

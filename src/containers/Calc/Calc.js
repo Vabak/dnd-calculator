@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 
 import InputRow from '../InputRow/InputRow';
+import { isNull } from 'util';
 
 const OPERATORS = ['/', '+', '-', '*'];
 const NUMBERS = /^\d*$/
@@ -16,8 +17,15 @@ class Calculator extends Component {
             },
         },
         rowIds: ['row-1'],
-        elements: {},
-        counter: 1
+        elements: {
+            'caret': {
+                id: 'caret',
+                type: 'caret',
+                value: '',
+            },
+        },
+        counter: 1,
+        isCaret: false,
     }
 
     // componentDidUpdate(prevProps, prevState) {
@@ -41,7 +49,6 @@ class Calculator extends Component {
             this.createMathOperator(value.slice(-1), id, rowId)
         }
     }
-
 
 
     // setInputRef = element => {
@@ -162,6 +169,22 @@ class Calculator extends Component {
             }
         })
     }
+
+    addCaret = (rowId, id) => {
+        console.log(rowId, id)
+        const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
+
+        newElementsOrder.push('caret');
+        this.setState({
+            isCaret: true,
+            rows: {
+                ...this.state.rows,
+                [rowId]: {
+                    elementsOrder: newElementsOrder,
+                }
+            },
+        })
+    }
     // replaceOperator = (operator) => {
     //     let newData = [...this.state.row.data];
     //     const newOperator = {
@@ -207,36 +230,37 @@ class Calculator extends Component {
     // Drag and Drop
 
     onDragEnd = result => {
-        const { destination, source, draggableId } = result;
-
+        const { destination, source} = result;
+        const droppableId = source.droppableId;
         if (!destination) return;
 
         if (
-            destination.droppableId === source.draggableId &&
+            destination.droppableId === source.droppableId &&
             destination.index === source.index
-        ) {
-            return;
-        }
-        const newData = [...this.state.row.data];
-        const srcElement = this.state.row.data[source.index];
-        newData.splice(source.index, 1);
-        newData.splice(destination.index, 0, srcElement);
+        ) return;
+        const newOrder = [...this.state.rows[source.droppableId].elementsOrder];
+        const srcEl = newOrder[source.index];
+        const destEl = newOrder[destination.index];
+        newOrder[source.index] = destEl;
+        newOrder[destination.index] = srcEl;
 
-
-        this.setState(this.setState({
-            ...this.state,
-            row: {
-                ...this.state.row,
-                data: newData
-            }
-        }))
-
+        this.setState({
+            rows: {
+                ...this.state.rows,
+                [droppableId]: {
+                    // ...this.state.rows[rowId],
+                    elementsOrder: newOrder,
+                }
+            },
+        })
     }
+
 
     render() {
         const rows = this.state.rowIds.map(rowId => (
             <InputRow
                 // inputRef={this.setInputRef}
+                addCaret={this.addCaret}
                 key={rowId}
                 handleInput={this.handleInputChange}
                 keyDown={this.handleKeyDown}
@@ -247,10 +271,11 @@ class Calculator extends Component {
             />
         ))
         return (
-            <DragDropContext onDragEnd={this.onDragEnd}>
-                <div>
-                    {rows}
-                </div>
+            <DragDropContext
+                onDragEnd={this.onDragEnd}>
+                    <div>
+                        {rows}
+                    </div>
             </DragDropContext>
 
 
