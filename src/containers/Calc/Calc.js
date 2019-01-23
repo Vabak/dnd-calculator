@@ -28,7 +28,6 @@ class Calculator extends Component {
         caret: {
             isExist: false,
             position: null,
-            index: null, 
         }
     }
 
@@ -104,8 +103,6 @@ class Calculator extends Component {
         }
     }
 
-    deleteElement() {
-    }
     createRow() {
         const newRowId = 'row-' + this.getCounter();
         const newRowIds = Array.from(this.state.rowIds);
@@ -189,7 +186,22 @@ class Calculator extends Component {
             caret: {
                 isExist: true,
                 position: rowId,
-                index: index+1
+            }
+        })
+    }
+
+    deleteElement() {
+        const caretPosition = this.state.caret.position;
+        const caretIndex = this.state.rows[caretPosition].elementsOrder.findIndex(el => el === 'caret');
+        const newElementsOrder = [...this.state.rows[caretPosition].elementsOrder];
+        newElementsOrder.splice(caretIndex-1, 1)
+        this.setState({
+            rows: {
+                ...this.state.rows,
+                [caretPosition]: {
+                    ...this.state.caretPosition,
+                    elementsOrder: newElementsOrder,
+                } 
             }
         })
     }
