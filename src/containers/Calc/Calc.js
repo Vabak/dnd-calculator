@@ -25,7 +25,11 @@ class Calculator extends Component {
             },
         },
         counter: 1,
-        isCaret: false,
+        caret: {
+            isExist: false,
+            position: null,
+            index: null, 
+        }
     }
 
     // componentDidUpdate(prevProps, prevState) {
@@ -170,19 +174,23 @@ class Calculator extends Component {
         })
     }
 
-    addCaret = (rowId, id) => {
-        console.log(rowId, id)
+    addCaret = (rowId, index) => {
+        if (this.state.caret.isExist) return;
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
 
-        newElementsOrder.push('caret');
+        newElementsOrder.splice(index+1, 0, 'caret');
         this.setState({
-            isCaret: true,
             rows: {
                 ...this.state.rows,
                 [rowId]: {
                     elementsOrder: newElementsOrder,
                 }
             },
+            caret: {
+                isExist: true,
+                position: rowId,
+                index: index+1
+            }
         })
     }
     // replaceOperator = (operator) => {
