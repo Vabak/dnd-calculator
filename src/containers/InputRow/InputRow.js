@@ -10,9 +10,11 @@ import Operator from '../../components/Operator/Operator';
 const Row = styled.div`
     width: 100%;
     background-color: ${props => props.isDraggingOver ? 'darkgrey' : '#f1f1f1'};
-    height: 320px;
+    height: 100px;
     padding: 20px;
     display: flex;
+    flex-direction: row;
+    margin-top: 10px;
 `;
 
 

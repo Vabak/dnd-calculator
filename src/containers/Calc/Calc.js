@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 
 import InputRow from '../InputRow/InputRow';
-import { isNull } from 'util';
 
 const OPERATORS = ['/', '+', '-', '*'];
 const NUMBERS = /^\d*$/
@@ -24,7 +23,6 @@ class Calculator extends Component {
                 value: '',
             },
         },
-        counter: 1,
         caret: {
             isExist: false,
             position: null,
@@ -34,14 +32,6 @@ class Calculator extends Component {
     // componentDidUpdate(prevProps, prevState) {
     //     if (prevState.row.data !== this.state.row.data) this.calculation()
     // }
-    getCounter() {
-        let newCounter = this.state.counter;
-        newCounter++;
-        this.setState({
-            counter: newCounter
-        });
-        return newCounter;
-    }
 
     handleInputChange = (event, id, rowId) => {
         const value = event.target.value;
@@ -104,7 +94,7 @@ class Calculator extends Component {
     }
 
     createRow() {
-        const newRowId = 'row-' + this.getCounter();
+        const newRowId = 'row-' + Date.now().toString();
         const newRowIds = Array.from(this.state.rowIds);
         newRowIds.push(newRowId);
         const newRow = {
@@ -123,7 +113,7 @@ class Calculator extends Component {
     createNumber = (num, rowId) => {
         // if ()
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
-        const newElementId = Date.now().toString();
+        const newElementId = 'num-' + Date.now().toString();
 
         newElementsOrder.push(newElementId);
         const newElement = {
@@ -148,7 +138,7 @@ class Calculator extends Component {
 
     createMathOperator = (operator, inputId, rowId) => {
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
-        const newElementId = Date.now().toString();
+        const newElementId = 'opr-' + Date.now().toString();
 
         newElementsOrder.push(newElementId);
         const newElement = {
@@ -175,7 +165,7 @@ class Calculator extends Component {
         if (this.state.caret.isExist) return;
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
 
-        newElementsOrder.splice(index+1, 0, 'caret');
+        newElementsOrder.splice(index + 1, 0, 'caret');
         this.setState({
             rows: {
                 ...this.state.rows,
@@ -194,14 +184,14 @@ class Calculator extends Component {
         const caretPosition = this.state.caret.position;
         const caretIndex = this.state.rows[caretPosition].elementsOrder.findIndex(el => el === 'caret');
         const newElementsOrder = [...this.state.rows[caretPosition].elementsOrder];
-        newElementsOrder.splice(caretIndex-1, 1)
+        newElementsOrder.splice(caretIndex - 1, 1)
         this.setState({
             rows: {
                 ...this.state.rows,
                 [caretPosition]: {
                     ...this.state.caretPosition,
                     elementsOrder: newElementsOrder,
-                } 
+                }
             }
         })
     }
@@ -221,6 +211,20 @@ class Calculator extends Component {
     //         }
     //     })
     // }
+    validateBeforeEval = (str, rowId) => {
+        let prevEl = null;
+        let typeCounter = 0;
+        for (let i = 0; i < this.state.rows[rowId].elementsOrder; i++) {
+            if (typeCounter >= 2) return false;
+            const el = this.state.rows[rowId].elementsOrder[i];
+            if (prevEl === el) {
+                typeCounter++;
+            } else {
+                prevEl = el;
+            }
+        }
+        if (this.inputValidation(str[str.length-1]) === 'operator') return false; 
+    }
 
     calculation() {
         let equation = '';
@@ -250,7 +254,7 @@ class Calculator extends Component {
     // Drag and Drop
 
     onDragEnd = result => {
-        const { destination, source} = result;
+        const { destination, source } = result;
         const droppableId = source.droppableId;
         if (!destination) return;
 
@@ -258,12 +262,16 @@ class Calculator extends Component {
             destination.droppableId === source.droppableId &&
             destination.index === source.index
         ) return;
+
+        if (
+            destination.droppableId === source.droppableId &&
+            destination.index % 2
+        ) return;
         const newOrder = [...this.state.rows[source.droppableId].elementsOrder];
         const srcEl = newOrder[source.index];
         const destEl = newOrder[destination.index];
         newOrder[source.index] = destEl;
         newOrder[destination.index] = srcEl;
-
         this.setState({
             rows: {
                 ...this.state.rows,
@@ -293,12 +301,10 @@ class Calculator extends Component {
         return (
             <DragDropContext
                 onDragEnd={this.onDragEnd}>
-                    <div>
-                        {rows}
-                    </div>
+                <div>
+                    {rows}
+                </div>
             </DragDropContext>
-
-
         );
     }
 }

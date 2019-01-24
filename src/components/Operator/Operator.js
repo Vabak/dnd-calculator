@@ -19,7 +19,8 @@ const Operator = (props) => {
         <StyledOperator
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        {...provided.dragHandleProps}>{props.operator}</StyledOperator>)}
+                        {...provided.dragHandleProps}
+                        >{props.operator}</StyledOperator>)}
         </Draggable>
 
     );
