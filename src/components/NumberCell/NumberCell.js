@@ -31,8 +31,9 @@ const Cell = (props) => {
                     <Input
                         autoFocus={props.focus}
                         value={props.value}
+                        rowId={props.rowId}
                         onKeyDown={e => e.stopPropagation()}
-                        onChange={(event, id, rowId) => { props.handleInput(event, props.inputId, props.rowId) }}
+                        onChange={(event) => { props.handleInput(event, props.inputId, props.rowId) }}
                         readOnly={props.read} />
                 </StyledNumber>)}
         </Draggable>

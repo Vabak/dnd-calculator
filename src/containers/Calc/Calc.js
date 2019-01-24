@@ -29,14 +29,10 @@ class Calculator extends Component {
         }
     }
 
-    // componentDidUpdate(prevProps, prevState) {
-    //     if (prevState.row.data !== this.state.row.data) this.calculation()
-    // }
-
     handleInputChange = (event, id, rowId) => {
         const value = event.target.value;
         if (this.inputValidation(value) === 'number') {
-            this.handleChangeNumber(value, id)
+            this.handleChangeNumber(value, id, rowId)
         }
         if (this.inputValidation(value) === 'operator') {
             this.createMathOperator(value.slice(-1), id, rowId)
@@ -60,7 +56,8 @@ class Calculator extends Component {
         return;
     }
 
-    handleChangeNumber = (value, id) => {
+    handleChangeNumber = (value, id, rowId) => {
+        console.log(value, id, rowId)
         let newElements = { ...this.state.elements }
         const newElement = newElements[id];
         newElement.value = value;
@@ -70,7 +67,7 @@ class Calculator extends Component {
         }
         this.setState({
             elements: newElements
-        })
+        }, () => this.calculation(rowId))
     }
 
     handleKeyDown = (event, rowId) => {
@@ -125,7 +122,6 @@ class Calculator extends Component {
             rows: {
                 ...this.state.rows,
                 [rowId]: {
-                    // ...this.state.rows[rowId],
                     elementsOrder: newElementsOrder,
                 }
             },
@@ -194,6 +190,7 @@ class Calculator extends Component {
                 }
             }
         })
+        this.calculation(caretPosition)
     }
     // replaceOperator = (operator) => {
     //     let newData = [...this.state.row.data];
@@ -221,35 +218,30 @@ class Calculator extends Component {
                 typeCounter++;
             } else {
                 prevEl = el;
+                typeCounter = 0;
             }
         }
-        if (this.inputValidation(str[str.length-1]) === 'operator') return false; 
+        console.log('after for')
+        if (this.inputValidation(str) === 'operator') return false; 
+        return true;
     }
 
-    calculation() {
+    calculation(rowId) {
+        console.log(rowId)
+        console.log(this.state.rows[rowId])
         let equation = '';
 
-        if (this.state.row.data.length !== 0) {
-            this.state.row.data.map(el => {
-                equation = equation + el.value;
-            })
-        } else {
-            equation = 0;
-        }
-        if (OPERATORS.includes(equation[equation.length - 1])) {
-            return;
-        }
-
-        const newEval = (string) => {
-            return eval(string);
-        }
-        this.setState({
-            ...this.state,
-            row: {
-                ...this.state.row,
-                eval: newEval(equation)
-            }
+        // if (this.state.rows[rowId].elementsOrder.length == 0) return;
+        console.log(this.state.rows[rowId].elementsOrder)
+        this.state.rows[rowId].elementsOrder.map(el => {
+            equation = equation + this.state.elements[el].value
         })
+        if (this.validateBeforeEval(equation, rowId)) {
+            console.log('valid')
+            return;
+        };
+        console.log('invalid')
+
     }
     // Drag and Drop
 
