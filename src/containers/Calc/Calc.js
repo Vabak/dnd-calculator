@@ -246,35 +246,47 @@ class Calculator extends Component {
     // Drag and Drop
 
     onDragEnd = result => {
-        const { destination, source } = result;
-        const droppableId = source.droppableId;
+        const { destination, source } = result;       
         if (!destination) return;
 
-        if (
-            destination.droppableId === source.droppableId &&
-            destination.index === source.index
-        ) return;
-
-        if (
-            destination.droppableId === source.droppableId &&
-            destination.index % 2
-        ) return;
-        const newOrder = [...this.state.rows[source.droppableId].elementsOrder];
-        const srcEl = newOrder[source.index];
-        const destEl = newOrder[destination.index];
-        newOrder[source.index] = destEl;
-        newOrder[destination.index] = srcEl;
-        this.setState({
-            rows: {
-                ...this.state.rows,
-                [droppableId]: {
-                    // ...this.state.rows[rowId],
-                    elementsOrder: newOrder,
-                }
-            },
-        })
+        if (destination.droppableId === source.droppableId) {
+            const droppableId = source.droppableId;
+            if (destination.index === source.index || destination.index % 2) return;
+            const newOrder = [...this.state.rows[source.droppableId].elementsOrder];
+            const srcEl = newOrder[source.index];
+            const destEl = newOrder[destination.index];
+            newOrder[source.index] = destEl;
+            newOrder[destination.index] = srcEl;
+            this.setState({
+                rows: {
+                    ...this.state.rows,
+                    [droppableId]: {
+                        // ...this.state.rows[rowId],
+                        elementsOrder: newOrder,
+                    }
+                },
+            })
+            return;
+        }
+        if (destination.droppableId !== source.droppableId) {
+            const newOrderSource = [...this.state.rows[source.droppableId].elementsOrder];
+            const newOrderDest= [...this.state.rows[destination.droppableId].elementsOrder];
+            const srcEl = newOrderSource[source.index];
+            const destEl = newOrderDest[destination.index];
+            newOrderDest[destination.index] = srcEl;
+            this.setState({
+                rows: {
+                    ...this.state.rows,
+                    [destination.droppableId]: {
+                        // ...this.state.rows[rowId],
+                        elementsOrder: newOrderDest,
+                    }
+                },
+            })
+            return;
+        }
+        
     }
-
 
     render() {
         const rows = this.state.rowIds.map(rowId => (
