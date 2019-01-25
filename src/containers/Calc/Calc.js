@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
+import { DragDropContextProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 import InputRow from '../InputRow/InputRow';
 
@@ -222,7 +224,7 @@ class Calculator extends Component {
             }
         }
         console.log('after for')
-        if (this.inputValidation(str) === 'operator') return false; 
+        if (this.inputValidation(str) === 'operator') return false;
         return true;
     }
 
@@ -246,7 +248,7 @@ class Calculator extends Component {
     // Drag and Drop
 
     onDragEnd = result => {
-        const { destination, source } = result;       
+        const { destination, source } = result;
         if (!destination) return;
 
         if (destination.droppableId === source.droppableId) {
@@ -270,7 +272,7 @@ class Calculator extends Component {
         }
         if (destination.droppableId !== source.droppableId) {
             const newOrderSource = [...this.state.rows[source.droppableId].elementsOrder];
-            const newOrderDest= [...this.state.rows[destination.droppableId].elementsOrder];
+            const newOrderDest = [...this.state.rows[destination.droppableId].elementsOrder];
             const srcEl = newOrderSource[source.index];
             const destEl = newOrderDest[destination.index];
             newOrderDest[destination.index] = srcEl;
@@ -285,7 +287,7 @@ class Calculator extends Component {
             })
             return;
         }
-        
+
     }
 
     render() {
@@ -303,12 +305,11 @@ class Calculator extends Component {
             />
         ))
         return (
-            <DragDropContext
-                onDragEnd={this.onDragEnd}>
+            <DragDropContextProvider backend={HTML5Backend}>
                 <div>
                     {rows}
                 </div>
-            </DragDropContext>
+            </DragDropContextProvider>
         );
     }
 }

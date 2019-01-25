@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Draggable } from 'react-beautiful-dnd';
+// import { Draggable } from 'react-beautiful-dnd';
+import { DragSource } from 'react-dnd';
+import { ItemTypes } from '../../constants/contsansts'
 
 const StyledNumber = styled.div`
     width: 40px;
@@ -18,16 +20,23 @@ const Input = styled.input`
     border: none;  
 `;
 
+const cellSource = {
+    beginDrag(props) {
+        return {};
+    }
+};
+
+const collect = (connect, monitor) => {
+    return {
+        connectDragSource: connect.dragSource(),
+        isDragging: monitor.isDragging(),
+    }
+}
+
 const Cell = (props) => {
     return (
-        <Draggable draggableId={props.inputId} index={props.index}>
-            {(provided, snapshot) => (
                 <StyledNumber
-                onClick={(rowId, index) => props.addCaret(props.rowId, props.index)}
-                isDragging={snapshot.isDragging}
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}>
+                onClick={(rowId, index) => props.addCaret(props.rowId, props.index)}>
                     <Input
                         autoFocus={props.focus}
                         value={props.value}
@@ -35,9 +44,8 @@ const Cell = (props) => {
                         onKeyDown={e => e.stopPropagation()}
                         onChange={(event) => { props.handleInput(event, props.inputId, props.rowId) }}
                         readOnly={props.read} />
-                </StyledNumber>)}
-        </Draggable>
+                </StyledNumber>
     );
 }
 
-export default Cell;
+export default DragSource(ItemTypes.NumberCell, cellSource, collect)(Cell);

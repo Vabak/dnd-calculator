@@ -14,14 +14,10 @@ const StyledOperator = styled.div`
 
 const Operator = (props) => {
     return (
-        <Draggable draggableId={props.operatorId} index={props.index} isDragDisabled={true}>
-        {(provided, snapshot) => (
         <StyledOperator
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        >{props.operator}</StyledOperator>)}
-        </Draggable>
+
+                        >{props.operator}</StyledOperator>
+
 
     );
 }
