@@ -33,8 +33,8 @@ const collect = (connect, monitor) => {
     }
 }
 
-const Cell = (props) => {
-    return (
+const Cell = ({connectDragSource, isDragging, ...props}) => {
+    return connectDragSource(
                 <StyledNumber
                 onClick={(rowId, index) => props.addCaret(props.rowId, props.index)}>
                     <Input

@@ -305,11 +305,11 @@ class Calculator extends Component {
             />
         ))
         return (
-            <DragDropContextProvider backend={HTML5Backend}>
+            // <DragDropContextProvider backend={HTML5Backend}>
                 <div>
                     {rows}
                 </div>
-            </DragDropContextProvider>
+            // </DragDropContextProvider>
         );
     }
 }

@@ -54,24 +54,16 @@ const InputRow = (props) => {
     });
 
     return (
-        <Droppable droppableId={props.rowId} direction={"horizontal"}>
-            {(provided, snapshot) => (
+
                 <Row
-                    ref={provided.innerRef} 
-                    {...provided.droppableProps}
                     tabIndex="0"
-                    isDraggingOver={snapshot.isDraggingOver}
                     onKeyDown={(event, id) => props.keyDown(event, props.rowId)}
                     // ref={props.inputRef}
                     rowId={props.rowId}>
-                    {provided.placeholder}
                     {mathRow}
                     {/* <Operator operator={'='} />
                     <NumberCell value={props.eval} focus={false} read={true} handleInput={null} /> */}
                 </Row>
-            )}
-
-        </Droppable>
 
     );
 }
