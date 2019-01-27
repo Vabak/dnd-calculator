@@ -23,6 +23,7 @@ class Calculator extends Component {
                 value: '',
             },
         },
+        elementsValues: {},
         caret: {
             isExist: false,
             position: null,
@@ -58,15 +59,11 @@ class Calculator extends Component {
 
     handleChangeNumber = (value, id, rowId) => {
         console.log(value, id, rowId)
-        let newElements = { ...this.state.elements }
-        const newElement = newElements[id];
-        newElement.value = value;
-        newElements = {
-            ...newElements,
-            [id]: newElement
-        }
         this.setState({
-            elements: newElements
+            elementsValues: {
+                ...this.state.elementsValues,
+                [id]: value,                
+            }
         }, () => this.calculation(rowId))
     }
 
@@ -116,7 +113,7 @@ class Calculator extends Component {
         const newElement = {
             id: newElementId,
             type: 'number',
-            value: '',
+            value: this.state.elementsValues[newElementId],
         }
         this.setState({
             rows: {
@@ -128,7 +125,11 @@ class Calculator extends Component {
             elements: {
                 ...this.state.elements,
                 [newElementId]: newElement,
-            }
+            },
+            elementsValues: {
+                ...this.state.elementsValues,
+                [newElementId]: '',
+            },
         })
     }
 
@@ -153,7 +154,7 @@ class Calculator extends Component {
             elements: {
                 ...this.state.elements,
                 [newElementId]: newElement,
-            }
+            },
         })
     }
 
@@ -297,6 +298,7 @@ class Calculator extends Component {
                 handleInput={this.handleInputChange}
                 keyDown={this.handleKeyDown}
                 rowId={rowId}
+                elementsValues={this.state.elementsValues}
                 elements={this.state.elements}
                 eval={this.state.rows[rowId].eval}
                 elementsOrder={this.state.rows[rowId].elementsOrder}
