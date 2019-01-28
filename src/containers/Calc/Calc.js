@@ -63,14 +63,20 @@ class Calculator extends Component {
             this.setState({
                 elementsValues: {
                     ...this.state.elementsValues,
-                    [el.bound]: value,                
+                    [el.bound]: {
+                        ...this.state.elementsValues[el.bound],
+                        value: value,
+                    }                
                 }})
                 return;
         }
         this.setState({
             elementsValues: {
                 ...this.state.elementsValues,
-                [id]: value,                
+                [id]: {
+                    ...this.state.elementsValues[id],
+                    value: value
+                }                 
             }
         }, () => this.calculation(rowId))
     }
@@ -136,7 +142,10 @@ class Calculator extends Component {
             },
             elementsValues: {
                 ...this.state.elementsValues,
-                [newElementId]: '',
+                [newElementId]: {
+                    value: '',
+                    tied: 1,
+                }
             },
         })
     }

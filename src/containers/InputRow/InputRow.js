@@ -31,7 +31,7 @@ const InputRow = (props) => {
                     read={false}
                     rowId={props.rowId}
                     addCaret={props.addCaret}
-                    value={props.elements[elemId].bound ? props.elementsValues[props.elements[elemId].bound] : props.elementsValues[elemId].value} />
+                    value={props.elements[elemId].bound ? props.elementsValues[props.elements[elemId].bound].value : props.elementsValues[elemId].value} />
             case 'operator':
                 return <Operator
                     index={index}
