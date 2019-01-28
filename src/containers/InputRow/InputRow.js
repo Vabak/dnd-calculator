@@ -17,8 +17,6 @@ const Row = styled.div`
     margin-top: 10px;
 `;
 
-
-
 const InputRow = (props) => {
 
     let mathRow = props.elementsOrder.map((elemId, index) => {
@@ -33,7 +31,7 @@ const InputRow = (props) => {
                     read={false}
                     rowId={props.rowId}
                     addCaret={props.addCaret}
-                    value={props.elements[elemId].value} />
+                    value={props.elements[elemId].bound ? props.elementsValues[props.elements[elemId].bound] : props.elementsValues[elemId].value} />
             case 'operator':
                 return <Operator
                     index={index}
@@ -70,7 +68,6 @@ const InputRow = (props) => {
                     <NumberCell value={props.eval} focus={false} read={true} handleInput={null} /> */}
                 </Row>
             )}
-
         </Droppable>
 
     );

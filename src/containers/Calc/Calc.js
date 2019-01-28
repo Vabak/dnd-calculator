@@ -58,7 +58,15 @@ class Calculator extends Component {
     }
 
     handleChangeNumber = (value, id, rowId) => {
-        console.log(value, id, rowId)
+        const el = this.state.elements[id]
+        if (el.bound) {
+            this.setState({
+                elementsValues: {
+                    ...this.state.elementsValues,
+                    [el.bound]: value,                
+                }})
+                return;
+        }
         this.setState({
             elementsValues: {
                 ...this.state.elementsValues,
@@ -105,7 +113,6 @@ class Calculator extends Component {
         });
     }
     createNumber = (num, rowId) => {
-        // if ()
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
         const newElementId = 'num-' + Date.now().toString();
 
@@ -113,6 +120,7 @@ class Calculator extends Component {
         const newElement = {
             id: newElementId,
             type: 'number',
+            bound: newElementId,
             value: this.state.elementsValues[newElementId],
         }
         this.setState({
@@ -228,21 +236,14 @@ class Calculator extends Component {
     }
 
     calculation(rowId) {
-        console.log(rowId)
-        console.log(this.state.rows[rowId])
         let equation = '';
-
         // if (this.state.rows[rowId].elementsOrder.length == 0) return;
-        console.log(this.state.rows[rowId].elementsOrder)
         this.state.rows[rowId].elementsOrder.map(el => {
             equation = equation + this.state.elements[el].value
         })
         if (this.validateBeforeEval(equation, rowId)) {
-            console.log('valid')
             return;
         };
-        console.log('invalid')
-
     }
     // Drag and Drop
 
@@ -250,38 +251,48 @@ class Calculator extends Component {
         const { destination, source } = result;       
         if (!destination) return;
 
-        if (destination.droppableId === source.droppableId) {
-            const droppableId = source.droppableId;
-            if (destination.index === source.index || destination.index % 2) return;
-            const newOrder = [...this.state.rows[source.droppableId].elementsOrder];
-            const srcEl = newOrder[source.index];
-            const destEl = newOrder[destination.index];
-            newOrder[source.index] = destEl;
-            newOrder[destination.index] = srcEl;
-            this.setState({
-                rows: {
-                    ...this.state.rows,
-                    [droppableId]: {
-                        // ...this.state.rows[rowId],
-                        elementsOrder: newOrder,
-                    }
-                },
-            })
-            return;
-        }
+        // if (destination.droppableId === source.droppableId) {
+        //     const droppableId = source.droppableId;
+        //     if (destination.index === source.index || destination.index % 2) return;
+        //     const newOrder = [...this.state.rows[source.droppableId].elementsOrder];
+        //     const srcEl = newOrder[source.index];
+        //     const destEl = newOrder[destination.index];
+        //     newOrder[source.index] = destEl;
+        //     newOrder[destination.index] = srcEl;
+        //     this.setState({
+        //         rows: {
+        //             ...this.state.rows,
+        //             [droppableId]: {
+        //                 // ...this.state.rows[rowId],
+        //                 elementsOrder: newOrder,
+        //             }
+        //         },
+        //     })
+        //     return;
+        // }
         if (destination.droppableId !== source.droppableId) {
             const newOrderSource = [...this.state.rows[source.droppableId].elementsOrder];
             const newOrderDest= [...this.state.rows[destination.droppableId].elementsOrder];
             const srcEl = newOrderSource[source.index];
-            const destEl = newOrderDest[destination.index];
-            newOrderDest[destination.index] = srcEl;
+            const destEl = {
+                id: 'num-' + Date.now().toString(),
+                type: 'number',
+                bound: srcEl,
+                value: this.state.elementsValues[srcEl],
+            }
+
+            newOrderDest[destination.index] = destEl.id;
             this.setState({
                 rows: {
                     ...this.state.rows,
                     [destination.droppableId]: {
-                        // ...this.state.rows[rowId],
+                        ...this.state.rows[destination.droppableId],
                         elementsOrder: newOrderDest,
                     }
+                },
+                elements: {
+                    ...this.state.elements,
+                    [destEl.id]: destEl
                 },
             })
             return;
