@@ -33,7 +33,7 @@ const Cell = (props) => {
                         value={props.value}
                         rowId={props.rowId}
                         onKeyDown={e => e.stopPropagation()}
-                        onChange={(event) => { props.handleInput(event, props.inputId, props.rowId) }}
+                        onChange={(event) => { props.handleInput(event, props.valueId, props.rowId) }}
                         readOnly={props.read} />
                 </StyledNumber>)}
         </Draggable>

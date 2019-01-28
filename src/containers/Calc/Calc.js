@@ -58,18 +58,18 @@ class Calculator extends Component {
     }
 
     handleChangeNumber = (value, id, rowId) => {
-        const el = this.state.elements[id]
-        if (el.bound) {
-            this.setState({
-                elementsValues: {
-                    ...this.state.elementsValues,
-                    [el.bound]: {
-                        ...this.state.elementsValues[el.bound],
-                        value: value,
-                    }                
-                }})
-                return;
-        }
+        // const el = this.state.elements[id]
+        // if (el.bound) {
+        //     this.setState({
+        //         elementsValues: {
+        //             ...this.state.elementsValues,
+        //             [el.bound]: {
+        //                 ...this.state.elementsValues[el.bound],
+        //                 value: value,
+        //             }                
+        //         }})
+        //         return;
+        // }
         this.setState({
             elementsValues: {
                 ...this.state.elementsValues,
@@ -126,8 +126,7 @@ class Calculator extends Component {
         const newElement = {
             id: newElementId,
             type: 'number',
-            bound: newElementId,
-            value: this.state.elementsValues[newElementId],
+            valueId: newElementId
         }
         this.setState({
             rows: {
@@ -286,8 +285,7 @@ class Calculator extends Component {
             const destEl = {
                 id: 'num-' + Date.now().toString(),
                 type: 'number',
-                bound: srcEl,
-                value: this.state.elementsValues[srcEl],
+                valueId: srcEl,
             }
 
             newOrderDest[destination.index] = destEl.id;
