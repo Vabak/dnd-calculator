@@ -10,6 +10,7 @@ class Calculator extends Component {
     state = {
         rows: {
             'row-1': {
+                isActive: true,
                 id: 'row-1',
                 elementsOrder: [],
                 eval: 0,
@@ -41,12 +42,12 @@ class Calculator extends Component {
     }
 
 
-    // setInputRef = element => {
-    //     this.inputElement = element;
+    // setElemRef = element => {
+    //     this.focusedElement = element;
     // };
 
     // inputFocus() {
-    //     this.inputElement.focus();
+    //     this.focusedElement.focus();
     // }
 
     inputValidation = (value) => {
@@ -58,18 +59,6 @@ class Calculator extends Component {
     }
 
     handleChangeNumber = (value, id, rowId) => {
-        // const el = this.state.elements[id]
-        // if (el.bound) {
-        //     this.setState({
-        //         elementsValues: {
-        //             ...this.state.elementsValues,
-        //             [el.bound]: {
-        //                 ...this.state.elementsValues[el.bound],
-        //                 value: value,
-        //             }                
-        //         }})
-        //         return;
-        // }
         this.setState({
             elementsValues: {
                 ...this.state.elementsValues,
@@ -118,7 +107,8 @@ class Calculator extends Component {
             }
         });
     }
-    createNumber = (num, rowId) => {
+
+    createNumber = (event, rowId) => {
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
         const newElementId = 'num-' + Date.now().toString();
 
@@ -171,14 +161,14 @@ class Calculator extends Component {
                 ...this.state.elements,
                 [newElementId]: newElement,
             },
-        })
+        }, () => this.createNumber(null, rowId))
     }
 
     addCaret = (rowId, index) => {
         if (this.state.caret.isExist) return;
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
 
-        newElementsOrder.splice(index + 1, 0, 'caret');
+        newElementsOrder.push('caret');
         this.setState({
             rows: {
                 ...this.state.rows,
@@ -189,6 +179,23 @@ class Calculator extends Component {
             caret: {
                 isExist: true,
                 position: rowId,
+            }
+        })
+    }
+
+    removeCaret = (rowId) => {
+        const oldElementsOrder = [...this.state.rows[rowId].elementsOrder];
+        const newElementsOrder = oldElementsOrder.filter(el => el !== 'caret');
+        this.setState({
+            rows: {
+                ...this.state.rows,
+                [rowId]: {
+                    elementsOrder: newElementsOrder,
+                }
+            },
+            caret: {
+                isExist: false,
+                position: null,
             }
         })
     }
@@ -238,7 +245,6 @@ class Calculator extends Component {
                 typeCounter = 0;
             }
         }
-        console.log('after for')
         if (this.inputValidation(str) === 'operator') return false; 
         return true;
     }
@@ -259,25 +265,25 @@ class Calculator extends Component {
         const { destination, source } = result;       
         if (!destination) return;
 
-        // if (destination.droppableId === source.droppableId) {
-        //     const droppableId = source.droppableId;
-        //     if (destination.index === source.index || destination.index % 2) return;
-        //     const newOrder = [...this.state.rows[source.droppableId].elementsOrder];
-        //     const srcEl = newOrder[source.index];
-        //     const destEl = newOrder[destination.index];
-        //     newOrder[source.index] = destEl;
-        //     newOrder[destination.index] = srcEl;
-        //     this.setState({
-        //         rows: {
-        //             ...this.state.rows,
-        //             [droppableId]: {
-        //                 // ...this.state.rows[rowId],
-        //                 elementsOrder: newOrder,
-        //             }
-        //         },
-        //     })
-        //     return;
-        // }
+        if (destination.droppableId === source.droppableId) {
+            const droppableId = source.droppableId;
+            if (destination.index === source.index || destination.index % 2) return;
+            const newOrder = [...this.state.rows[source.droppableId].elementsOrder];
+            const srcEl = newOrder[source.index];
+            const destEl = newOrder[destination.index];
+            newOrder[source.index] = destEl;
+            newOrder[destination.index] = srcEl;
+            this.setState({
+                rows: {
+                    ...this.state.rows,
+                    [droppableId]: {
+                        // ...this.state.rows[rowId],
+                        elementsOrder: newOrder,
+                    }
+                },
+            })
+            return;
+        }
         if (destination.droppableId !== source.droppableId) {
             const newOrderSource = [...this.state.rows[source.droppableId].elementsOrder];
             const newOrderDest= [...this.state.rows[destination.droppableId].elementsOrder];
@@ -310,8 +316,10 @@ class Calculator extends Component {
     render() {
         const rows = this.state.rowIds.map(rowId => (
             <InputRow
-                // inputRef={this.setInputRef}
+                isActive={this.state.rows[rowId].isActive}
+                // setRef={this.setElemRef}
                 addCaret={this.addCaret}
+                removeCaret={this.removeCaret}
                 key={rowId}
                 handleInput={this.handleInputChange}
                 keyDown={this.handleKeyDown}

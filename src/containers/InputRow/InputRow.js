@@ -57,10 +57,12 @@ const InputRow = (props) => {
             {(provided, snapshot) => (
                 <Row
                     ref={provided.innerRef} 
+                    onFocus={() => props.addCaret(props.rowId)}
+                    onBlur={() => props.removeCaret(props.rowId)}
                     {...provided.droppableProps}
                     tabIndex="0"
                     isDraggingOver={snapshot.isDraggingOver}
-                    onKeyDown={(event, id) => props.keyDown(event, props.rowId)}
+                    onKeyDown={(event) => props.keyDown(event, props.rowId)}
                     // ref={props.inputRef}
                     rowId={props.rowId}>
                     {provided.placeholder}
