@@ -26,6 +26,8 @@ const InputRow = (props) => {
                     handleInput={props.handleInput}
                     inputId={elemId}
                     index={index}
+                    setRef={props.setRef}
+                    setFocusin={props.setFocusin}
                     key={elemId}
                     focus={true}
                     read={false}
@@ -56,6 +58,8 @@ const InputRow = (props) => {
         <Droppable droppableId={props.rowId} direction={"horizontal"}>
             {(provided, snapshot) => (
                 <Row
+                    setRef={props.setRef}
+                    setFocusin={props.setFocusin}
                     ref={provided.innerRef} 
                     onFocus={() => props.addCaret(props.rowId)}
                     onBlur={() => props.removeCaret(props.rowId)}
