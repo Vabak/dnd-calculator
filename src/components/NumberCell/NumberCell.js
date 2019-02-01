@@ -35,7 +35,8 @@ const collect = (connect, monitor) => {
 
 const Cell = ({connectDragSource, isDragging, ...props}) => {
     return connectDragSource(
-                <StyledNumber
+        <div>
+             <StyledNumber
                 onClick={(rowId, index) => props.addCaret(props.rowId, props.index)}>
                     <Input
                         autoFocus={props.focus}
@@ -45,6 +46,8 @@ const Cell = ({connectDragSource, isDragging, ...props}) => {
                         onChange={(event) => { props.handleInput(event, props.inputId, props.rowId) }}
                         readOnly={props.read} />
                 </StyledNumber>
+        </div>
+               
     );
 }
 
