@@ -17,8 +17,6 @@ const Row = styled.div`
     margin-top: 10px;
 `;
 
-
-
 const InputRow = (props) => {
 
     let mathRow = props.elementsOrder.map((elemId, index) => {
@@ -33,7 +31,8 @@ const InputRow = (props) => {
                     read={false}
                     rowId={props.rowId}
                     addCaret={props.addCaret}
-                    value={props.elements[elemId].value} />
+                    valueId={props.elements[elemId].valueId}
+                    value={props.elementsValues[props.elements[elemId].valueId].value} />
             case 'operator':
                 return <Operator
                     index={index}
@@ -46,7 +45,7 @@ const InputRow = (props) => {
                     key={elemId}
                     id={elemId}
                     rowId={props.rowId}
-                        />
+                />
             default:
                 return null;
         }
@@ -61,10 +60,8 @@ const InputRow = (props) => {
                     // ref={props.inputRef}
                     rowId={props.rowId}>
                     {mathRow}
-                    {/* <Operator operator={'='} />
-                    <NumberCell value={props.eval} focus={false} read={true} handleInput={null} /> */}
-                </Row>
 
+                </Row>
     );
 }
 

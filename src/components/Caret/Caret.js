@@ -1,11 +1,26 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const blinker = keyframes`
+  50% {
+    opacity: 0;
+  }
+`
 
 const StyledCaret = styled.div`
-    width: 20px;
-    height: 100%;
-    background-color: #4695d2;
-    display: inline-block;
+ font-size: 12px;
+  background-color: blue;
+  color: blue;
+  position: relative;
+  opacity: 0.5;
+  height: 1.5em;
+  width: 3px;
+  max-width: 3px;
+  overflow: hidden;
+  text-indent: -5px;
+  display: inline-block;
+  text-decoration: blink;
+  animation: ${blinker} 1s linear infinite;
 `;
 
 const Caret = (props) => {
@@ -13,5 +28,5 @@ const Caret = (props) => {
         <StyledCaret />
     );
 }
- 
+
 export default Caret;
