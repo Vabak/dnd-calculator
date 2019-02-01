@@ -26,8 +26,6 @@ const InputRow = (props) => {
                     handleInput={props.handleInput}
                     inputId={elemId}
                     index={index}
-                    setRef={props.setRef}
-                    setFocusin={props.setFocusin}
                     key={elemId}
                     focus={true}
                     read={false}
@@ -47,7 +45,7 @@ const InputRow = (props) => {
                     key={elemId}
                     id={elemId}
                     rowId={props.rowId}
-                        />
+                />
             default:
                 return null;
         }
@@ -58,25 +56,20 @@ const InputRow = (props) => {
         <Droppable droppableId={props.rowId} direction={"horizontal"}>
             {(provided, snapshot) => (
                 <Row
-                    setRef={props.setRef}
-                    setFocusin={props.setFocusin}
-                    ref={provided.innerRef} 
+                    ref={provided.innerRef}
                     onFocus={() => props.addCaret(props.rowId)}
                     onBlur={() => props.removeCaret(props.rowId)}
                     {...provided.droppableProps}
                     tabIndex="0"
                     isDraggingOver={snapshot.isDraggingOver}
                     onKeyDown={(event) => props.keyDown(event, props.rowId)}
-                    // ref={props.inputRef}
                     rowId={props.rowId}>
                     {provided.placeholder}
                     {mathRow}
-                    {/* <Operator operator={'='} />
-                    <NumberCell value={props.eval} focus={false} read={true} handleInput={null} /> */}
+
                 </Row>
             )}
         </Droppable>
-
     );
 }
 

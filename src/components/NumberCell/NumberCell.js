@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
 
@@ -18,61 +18,26 @@ const Input = styled.input`
     border: none;  
 `;
 
-class Cell extends Component {
-    componentDidMount() {
-
-        this.props.setRef();
-        this.props.setFocusin();
-    }
-    render() { 
-        return (
-            <Draggable draggableId={this.props.inputId} index={this.props.index}>
-                         {(provided, snapshot) => (
-                            <StyledNumber
-                            // onClick={(rowId, index) => props.addCaret(props.rowId, props.index)}
-                            isDragging={snapshot.isDragging}
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}>
-                                <Input
-                                    ref={this.props.setRef}
-                                    setFocusin={this.props.setFocusin}
-                                    // autoFocus={props.focus}
-                                    value={this.props.value}
-                                    rowId={this.props.rowId}
-                                    onKeyDown={e => e.stopPropagation()}
-                                    onChange={(event) => {this.props.handleInput(event, this.props.valueId, this.props.rowId) }}
-                                    readOnly={this.props.read} />
-                            </StyledNumber>)}
-                    </Draggable>
-        );
-    }
+const Cell = (props) => {
+    return (
+        <Draggable draggableId={props.inputId} index={props.index}>
+            {(provided, snapshot) => (
+                <StyledNumber
+                // onClick={(rowId, index) => props.addCaret(props.rowId, props.index)}
+                isDragging={snapshot.isDragging}
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}>
+                    <Input
+                        autoFocus={props.focus}
+                        value={props.value}
+                        rowId={props.rowId}
+                        onKeyDown={e => e.stopPropagation()}
+                        onChange={(event) => { props.handleInput(event, props.valueId, props.rowId) }}
+                        readOnly={props.read} />
+                </StyledNumber>)}
+        </Draggable>
+    );
 }
- 
+
 export default Cell;
-
-// const Cell = (props) => {
-//     return (
-//         <Draggable draggableId={props.inputId} index={props.index}>
-//             {(provided, snapshot) => (
-//                 <StyledNumber
-//                 // onClick={(rowId, index) => props.addCaret(props.rowId, props.index)}
-//                 isDragging={snapshot.isDragging}
-//                 ref={provided.innerRef}
-//                 {...provided.draggableProps}
-//                 {...provided.dragHandleProps}>
-//                     <Input
-//                         ref={props.setRef}
-//                         setFocusin={props.setFocusin}
-//                         // autoFocus={props.focus}
-//                         value={props.value}
-//                         rowId={props.rowId}
-//                         onKeyDown={e => e.stopPropagation()}
-//                         onChange={(event) => { props.handleInput(event, props.valueId, props.rowId) }}
-//                         readOnly={props.read} />
-//                 </StyledNumber>)}
-//         </Draggable>
-//     );
-// }
-
-// export default Cell;

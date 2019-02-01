@@ -12,7 +12,7 @@ class Calculator extends Component {
             'row-1': {
                 isActive: true,
                 id: 'row-1',
-                elementsOrder: [],
+                elementsOrder: ['caret', 'result', 'equal'],
                 eval: 0,
             },
         },
@@ -21,13 +21,27 @@ class Calculator extends Component {
             'caret': {
                 id: 'caret',
                 type: 'caret',
-                value: '',
             },
+            'result': {
+                id: 'result',
+                type: 'result',
+                value: ''
+            },
+            'equal': {
+                id: 'equal',
+                type: 'operator',
+                value: '='
+            }
         },
-        elementsValues: {},
+        elementsValues: {
+            'result': {
+                id: 'result',
+                value: '0'
+            }
+        },
         caret: {
-            isExist: false,
-            positionRowRow: null,
+            isExist: true,
+            positionRowRow: 'row-1',
         }
     }
 
@@ -42,17 +56,6 @@ class Calculator extends Component {
             return;
         }
     }
-
-
-
-    setElemRef = element => {
-        this.focusedElement = element;
-    };
-
-    setFocusin() {
-        this.focusedElement.focusin();
-    }
-
     inputValidation = (value) => {
         if (NUMBERS.test(value)) return 'number';
         if (OPERATORS.includes(value) || OPERATORS.includes(value.slice(-1))) return 'operator';
@@ -62,7 +65,6 @@ class Calculator extends Component {
     }
 
     handleChangeNumber = (value, id, rowId) => {
-
         this.setState({
             elementsValues: {
                 ...this.state.elementsValues,
@@ -78,7 +80,7 @@ class Calculator extends Component {
         const validatedInput = this.inputValidation(event.key)
         switch (validatedInput) {
             case 'number':
-                this.createNumber(event.key, rowId)
+                this.createNumber(rowId)
                 break;
             case 'operator':
                 this.createMathOperator(event.key, null, rowId)
@@ -112,7 +114,7 @@ class Calculator extends Component {
         });
     }
 
-    createNumber = (event, rowId) => {
+    createNumber = (rowId) => {
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
         const newElementId = 'num-' + Date.now().toString();
 
@@ -146,7 +148,6 @@ class Calculator extends Component {
     createMathOperator = (operator, inputId, rowId) => {
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
         const newElementId = 'opr-' + Date.now().toString();
-
         newElementsOrder.push(newElementId);
         const newElement = {
             id: newElementId,
@@ -165,7 +166,7 @@ class Calculator extends Component {
                 ...this.state.elements,
                 [newElementId]: newElement,
             },
-        }, () => this.createNumber(null, rowId))
+        })
     }
 
     addCaret = (rowId, index) => {
@@ -289,6 +290,7 @@ class Calculator extends Component {
             })
             return;
         }
+
         if (destination.droppableId !== source.droppableId) {
             const newOrderSource = [...this.state.rows[source.droppableId].elementsOrder];
             const newOrderDest = [...this.state.rows[destination.droppableId].elementsOrder];
@@ -322,8 +324,6 @@ class Calculator extends Component {
         const rows = this.state.rowIds.map(rowId => (
             <InputRow
                 isActive={this.state.rows[rowId].isActive}
-                setRef={this.setElemRef}
-                setFocusin={this.setFocusin}
                 addCaret={this.addCaret}
                 removeCaret={this.removeCaret}
                 key={rowId}
