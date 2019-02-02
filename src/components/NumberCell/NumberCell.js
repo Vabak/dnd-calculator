@@ -22,7 +22,11 @@ const Input = styled.input`
 
 const cellSource = {
     beginDrag(props) {
-        return {};
+        return {
+            sourceId: props.id,
+            sourceRowId: props.rowId,
+            sourceIndex: props.index,
+        };
     }
 };
 

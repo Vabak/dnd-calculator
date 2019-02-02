@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { DragDropContextProvider } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 
 import InputRow from '../InputRow/InputRow';
 
@@ -340,11 +338,9 @@ class Calculator extends Component {
             />
         ))
         return (
-            // <DragDropContextProvider backend={HTML5Backend}>
                 <div>
                     {rows}
                 </div>
-            // </DragDropContextProvider>
         );
     }
 }
