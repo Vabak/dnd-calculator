@@ -18,22 +18,6 @@ class Calculator extends Component {
             },
         },
         rowIds: ['row-1'],
-        elements: {
-            // 'caret': {
-            //     id: 'caret',
-            //     type: 'caret',
-            // },
-            // 'result': {
-            //     id: 'result',
-            //     type: 'result',
-            //     value: ''
-            // },
-            // 'equal': {
-            //     id: 'equal',
-            //     type: 'operator',
-            //     value: '='
-            // }
-        },
         elementsValues: {
             // 'result': {
             //     id: 'result',
@@ -119,22 +103,19 @@ class Calculator extends Component {
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
         const newElementId = 'num-' + Date.now().toString();
 
-        newElementsOrder.push(newElementId);
+        
         const newElement = {
             id: newElementId,
             type: 'number',
             valueId: newElementId
         }
+        newElementsOrder.push(newElement);
         this.setState({
             rows: {
                 ...this.state.rows,
                 [rowId]: {
                     elementsOrder: newElementsOrder,
                 }
-            },
-            elements: {
-                ...this.state.elements,
-                [newElementId]: newElement,
             },
             elementsValues: {
                 ...this.state.elementsValues,
@@ -149,12 +130,12 @@ class Calculator extends Component {
     createMathOperator = (operator, inputId, rowId) => {
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
         const newElementId = 'opr-' + Date.now().toString();
-        newElementsOrder.push(newElementId);
         const newElement = {
             id: newElementId,
             type: 'operator',
-            value: operator,
+            valueId: newElementId,
         }
+        newElementsOrder.push(newElement);
         this.setState({
             ...this.state,
             rows: {
@@ -163,9 +144,11 @@ class Calculator extends Component {
                     elementsOrder: newElementsOrder,
                 }
             },
-            elements: {
-                ...this.state.elements,
-                [newElementId]: newElement,
+            elementsValues: {
+                ...this.state.elementsValues,
+                [newElementId]: {
+                    value: operator,
+                }
             },
         })
     }
@@ -174,7 +157,11 @@ class Calculator extends Component {
         if (this.state.caret.isExist) return;
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
 
-        newElementsOrder.push('caret');
+        newElementsOrder.push({
+            id: 'caret',
+            type: 'caret',
+            value: 'caret'
+        });
         this.setState({
             rows: {
                 ...this.state.rows,
@@ -191,7 +178,7 @@ class Calculator extends Component {
 
     removeCaret = (rowId) => {
         const oldElementsOrder = [...this.state.rows[rowId].elementsOrder];
-        const newElementsOrder = oldElementsOrder.filter(el => el !== 'caret');
+        const newElementsOrder = oldElementsOrder.filter(el => el.id !== 'caret');
         this.setState({
             rows: {
                 ...this.state.rows,
@@ -260,7 +247,7 @@ class Calculator extends Component {
         let equation = '';
         // if (this.state.rows[rowId].elementsOrder.length == 0) return;
         this.state.rows[rowId].elementsOrder.map(el => {
-            equation = equation + this.state.elements[el].value
+            equation = equation + this.state.elementsValues[el.id].value
         })
         if (this.validateBeforeEval(equation, rowId)) {
             return;
@@ -268,58 +255,58 @@ class Calculator extends Component {
     }
     // Drag and Drop
 
-    onDragEnd = result => {
-        const { destination, source } = result;
-        if (!destination) return;
+    // onDragEnd = result => {
+    //     const { destination, source } = result;
+    //     if (!destination) return;
 
-        if (destination.droppableId === source.droppableId) {
-            const droppableId = source.droppableId;
-            if (destination.index === source.index || destination.index % 2) return;
-            const newOrder = [...this.state.rows[source.droppableId].elementsOrder];
-            const srcEl = newOrder[source.index];
-            const destEl = newOrder[destination.index];
-            newOrder[source.index] = destEl;
-            newOrder[destination.index] = srcEl;
-            this.setState({
-                rows: {
-                    ...this.state.rows,
-                    [droppableId]: {
-                        // ...this.state.rows[rowId],
-                        elementsOrder: newOrder,
-                    }
-                },
-            })
-            return;
-        }
+    //     if (destination.droppableId === source.droppableId) {
+    //         const droppableId = source.droppableId;
+    //         if (destination.index === source.index || destination.index % 2) return;
+    //         const newOrder = [...this.state.rows[source.droppableId].elementsOrder];
+    //         const srcEl = newOrder[source.index];
+    //         const destEl = newOrder[destination.index];
+    //         newOrder[source.index] = destEl;
+    //         newOrder[destination.index] = srcEl;
+    //         this.setState({
+    //             rows: {
+    //                 ...this.state.rows,
+    //                 [droppableId]: {
+    //                     // ...this.state.rows[rowId],
+    //                     elementsOrder: newOrder,
+    //                 }
+    //             },
+    //         })
+    //         return;
+    //     }
 
-        if (destination.droppableId !== source.droppableId) {
-            const newOrderSource = [...this.state.rows[source.droppableId].elementsOrder];
-            const newOrderDest = [...this.state.rows[destination.droppableId].elementsOrder];
-            const srcEl = newOrderSource[source.index];
-            const destEl = {
-                id: 'num-' + Date.now().toString(),
-                type: 'number',
-                valueId: srcEl,
-            }
+    //     if (destination.droppableId !== source.droppableId) {
+    //         const newOrderSource = [...this.state.rows[source.droppableId].elementsOrder];
+    //         const newOrderDest = [...this.state.rows[destination.droppableId].elementsOrder];
+    //         const srcEl = newOrderSource[source.index];
+    //         const destEl = {
+    //             id: 'num-' + Date.now().toString(),
+    //             type: 'number',
+    //             valueId: srcEl,
+    //         }
 
-            newOrderDest[destination.index] = destEl.id;
-            this.setState({
-                rows: {
-                    ...this.state.rows,
-                    [destination.droppableId]: {
-                        ...this.state.rows[destination.droppableId],
-                        elementsOrder: newOrderDest,
-                    }
-                },
-                elements: {
-                    ...this.state.elements,
-                    [destEl.id]: destEl
-                },
-            })
-            return;
-        }
+    //         newOrderDest[destination.index] = destEl.id;
+    //         this.setState({
+    //             rows: {
+    //                 ...this.state.rows,
+    //                 [destination.droppableId]: {
+    //                     ...this.state.rows[destination.droppableId],
+    //                     elementsOrder: newOrderDest,
+    //                 }
+    //             },
+    //             elements: {
+    //                 ...this.state.elements,
+    //                 [destEl.id]: destEl
+    //             },
+    //         })
+    //         return;
+    //     }
 
-    }
+    // }
 
     render() {
         const rows = this.state.rowIds.map(rowId => (

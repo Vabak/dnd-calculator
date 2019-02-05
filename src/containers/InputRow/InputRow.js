@@ -19,31 +19,32 @@ const Row = styled.div`
 
 const InputRow = (props) => {
 
-    let mathRow = props.elementsOrder.map((elemId, index) => {
-        switch (props.elements[elemId].type) {
+    let mathRow = props.elementsOrder.map((elem, index) => {
+        switch (elem.type) {
             case 'number':
                 return <NumberCell
                     handleInput={props.handleInput}
-                    inputId={elemId}
+                    inputId={elem.id}
                     index={index}
-                    key={elemId}
+                    key={elem.id}
+                    elem={elem}
                     focus={true}
                     read={false}
                     rowId={props.rowId}
                     addCaret={props.addCaret}
-                    valueId={props.elements[elemId].valueId}
-                    value={props.elementsValues[props.elements[elemId].valueId].value} />
+                    valueId={elem.valueId}
+                    value={props.elementsValues[elem.valueId].value} />
             case 'operator':
                 return <Operator
                     index={index}
-                    operatorId={elemId}
-                    key={elemId}
+                    operatorId={elem.id}
+                    key={elem.id}
                     addCaret={props.addCaret}
-                    operator={props.elements[elemId].value} />
+                    operator={props.elementsValues[elem.valueId].value} />
             case 'caret':
                 return <Caret
-                    key={elemId}
-                    id={elemId}
+                    key={elem.id}
+                    id={elem.id}
                     rowId={props.rowId}
                 />
             default:
@@ -53,13 +54,12 @@ const InputRow = (props) => {
     });
 
     return (
-
-                <Row
-                    tabIndex="0"
-                    onKeyDown={(event, id) => props.keyDown(event, props.rowId)}
-                    rowId={props.rowId}>
-                    {mathRow}
-                </Row>
+        <Row
+            tabIndex="0"
+            onKeyDown={(event, id) => props.keyDown(event, props.rowId)}
+            rowId={props.rowId}>
+            {mathRow}
+        </Row>
     );
 }
 

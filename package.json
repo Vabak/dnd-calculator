@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "lodash.flow": "^3.5.0",
     "react": "^16.7.0",
     "react-beautiful-dnd": "^10.0.3",
     "react-dnd": "^7.0.2",

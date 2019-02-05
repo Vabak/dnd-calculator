@@ -14,9 +14,7 @@ const StyledOperator = styled.div`
 
 const Operator = (props) => {
     return (
-        <StyledOperator
-
-                        >{props.operator}</StyledOperator>
+        <StyledOperator>{props.operator}</StyledOperator>
 
 
     );
