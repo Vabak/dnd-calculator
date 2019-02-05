@@ -254,7 +254,7 @@ class Calculator extends Component {
         };
     }
     // Drag and Drop
-
+    // moveCell = (rowId, id, )
     // onDragEnd = result => {
     //     const { destination, source } = result;
     //     if (!destination) return;

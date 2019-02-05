@@ -54,12 +54,14 @@ const InputRow = (props) => {
     });
 
     return (
-        <Row
-            tabIndex="0"
-            onKeyDown={(event, id) => props.keyDown(event, props.rowId)}
-            rowId={props.rowId}>
-            {mathRow}
-        </Row>
+        <div>
+            <Row
+                tabIndex="0"
+                onKeyDown={(event, id) => props.keyDown(event, props.rowId)}
+                rowId={props.rowId}>
+                {mathRow}
+            </Row>
+        </div>
     );
 }
 
