@@ -35,20 +35,14 @@ const cellSource = {
 };
 
 const cellTarget = {
-	hover(props, monitor, component) {
+	drop(props, monitor, component) {
 		if (!component) {
 			return null;
         }
-        const sourceRow = props.rowId;
-        const destRow = monitor.getItem().sourceRowId;
+        const destRow = props.rowId;
+        const sourceRow = monitor.getItem().sourceRowId;
         const dragIndex = monitor.getItem().sourceIndex;
-        const hoverIndex = props.index;
-
-
-		// Don't replace items with themselves
-		if (dragIndex === hoverIndex) {
-			return
-		}
+        console.log()
 	},
 }
 
@@ -76,12 +70,12 @@ const Cell = ({connectDragSource, connectDragPreview, connectDropTarget, isDragg
                 isDragging={isDragging}
                 onClick={(rowId, index) => props.addCaret(props.rowId, props.index)}>
                     <Input
-                        autoFocus={props.focus}
+                        autoFocus
                         value={props.value}
                         rowId={props.rowId}
                         onKeyDown={e => e.stopPropagation()}
                         onChange={(event) => { props.handleInput(event, props.valueId, props.rowId) }}
-                        readOnly={props.read} />
+                    />
                 </StyledNumber>
         </div>
     )

@@ -253,61 +253,22 @@ class Calculator extends Component {
             return;
         };
     }
-    // Drag and Drop
-    // moveCell = (rowId, id, )
-    // onDragEnd = result => {
-    //     const { destination, source } = result;
-    //     if (!destination) return;
 
-    //     if (destination.droppableId === source.droppableId) {
-    //         const droppableId = source.droppableId;
-    //         if (destination.index === source.index || destination.index % 2) return;
-    //         const newOrder = [...this.state.rows[source.droppableId].elementsOrder];
-    //         const srcEl = newOrder[source.index];
-    //         const destEl = newOrder[destination.index];
-    //         newOrder[source.index] = destEl;
-    //         newOrder[destination.index] = srcEl;
-    //         this.setState({
-    //             rows: {
-    //                 ...this.state.rows,
-    //                 [droppableId]: {
-    //                     // ...this.state.rows[rowId],
-    //                     elementsOrder: newOrder,
-    //                 }
-    //             },
-    //         })
-    //         return;
-    //     }
-
-    //     if (destination.droppableId !== source.droppableId) {
-    //         const newOrderSource = [...this.state.rows[source.droppableId].elementsOrder];
-    //         const newOrderDest = [...this.state.rows[destination.droppableId].elementsOrder];
-    //         const srcEl = newOrderSource[source.index];
-    //         const destEl = {
-    //             id: 'num-' + Date.now().toString(),
-    //             type: 'number',
-    //             valueId: srcEl,
-    //         }
-
-    //         newOrderDest[destination.index] = destEl.id;
-    //         this.setState({
-    //             rows: {
-    //                 ...this.state.rows,
-    //                 [destination.droppableId]: {
-    //                     ...this.state.rows[destination.droppableId],
-    //                     elementsOrder: newOrderDest,
-    //                 }
-    //             },
-    //             elements: {
-    //                 ...this.state.elements,
-    //                 [destEl.id]: destEl
-    //             },
-    //         })
-    //         return;
-    //     }
-
-    // }
-
+    swapCells = (rowId, sourceIndex, destIndex) => {
+        const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
+        const srcEl = Object.assign({}, newElementsOrder[sourceIndex]);
+        newElementsOrder[sourceIndex] = newElementsOrder[destIndex];
+        newElementsOrder[destIndex] = srcEl; 
+        this.setState({
+            ...this.state,
+            rows: {
+                ...this.state.rows,
+                [rowId]: {
+                    elementsOrder: newElementsOrder,
+                }
+            },
+        })
+    }
     render() {
         const rows = this.state.rowIds.map(rowId => (
             <InputRow
@@ -315,6 +276,7 @@ class Calculator extends Component {
                 addCaret={this.addCaret}
                 removeCaret={this.removeCaret}
                 key={rowId}
+                swapCells={this.swapCells}
                 handleInput={this.handleInputChange}
                 keyDown={this.handleKeyDown}
                 rowId={rowId}

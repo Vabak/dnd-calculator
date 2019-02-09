@@ -40,9 +40,8 @@ const InputRow = ({ connectDropTarget, isOver, ...props }) => {
                     inputId={elem.id}
                     index={index}
                     key={elem.id}
+                    swapCells={props.swapCells}
                     elem={elem}
-                    focus={true}
-                    read={false}
                     rowId={props.rowId}
                     addCaret={props.addCaret}
                     valueId={elem.valueId}
