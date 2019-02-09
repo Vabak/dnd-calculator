@@ -5,11 +5,11 @@ import { DropTarget } from 'react-dnd'
 import Caret from '../../components/Caret/Caret';
 import NumberCell from '../../components/NumberCell/NumberCell';
 import Operator from '../../components/Operator/Operator';
-
+import { ItemTypes } from '../../constansts/contsansts'
 
 const Row = styled.div`
     width: 100%;
-    background-color: ${props => props.isDraggingOver ? 'darkgrey' : '#f1f1f1'};
+    background-color: ${props => props.isOver ? 'darkgrey' : '#f1f1f1'};
     height: 100px;
     padding: 20px;
     display: flex;
@@ -17,7 +17,20 @@ const Row = styled.div`
     margin-top: 10px;
 `;
 
-const InputRow = (props) => {
+const rowCollect = (connect, monitor) => {
+    return {
+        connectDropTarget: connect.dropTarget(),
+        isOver: monitor.isOver()
+    }
+}
+
+const rowTarget = {
+    drop(props) {
+		return { rowId: props.rowId }
+	},
+}
+
+const InputRow = ({ connectDropTarget, isOver, ...props }) => {
 
     let mathRow = props.elementsOrder.map((elem, index) => {
         switch (elem.type) {
@@ -53,9 +66,10 @@ const InputRow = (props) => {
 
     });
 
-    return (
+    return connectDropTarget(
         <div>
             <Row
+                isOver={isOver}
                 tabIndex="0"
                 onKeyDown={(event, id) => props.keyDown(event, props.rowId)}
                 rowId={props.rowId}>
@@ -65,4 +79,4 @@ const InputRow = (props) => {
     );
 }
 
-export default InputRow;
+export default DropTarget(ItemTypes.NumberCell, rowTarget, rowCollect)(InputRow);

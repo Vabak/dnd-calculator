@@ -1,16 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-import { findDOMNode } from 'react-dom'
+// import { findDOMNode } from 'react-dom'
 // import { Draggable } from 'react-beautiful-dnd';
 import { DragSource, DropTarget } from 'react-dnd';
-import { ItemTypes } from '../../constants/contsansts'
+import { ItemTypes } from '../../constansts/contsansts'
 import flow from 'lodash.flow'
 
 const StyledNumber = styled.div`
     width: 40px;
     height: 40px;
     padding: 10px;
-    background-color: lightblue;
+    background-color: ${props => props.isOver ? 'lightgreen' : 'lightblue'};
     opacity: ${props => props.isDragging ? 0 : 1};
     display: inline-block;
     margin: 0 10px;
@@ -37,12 +37,12 @@ const cellSource = {
 const cellTarget = {
 	hover(props, monitor, component) {
 		if (!component) {
-			return null
+			return null;
         }
         const sourceRow = props.rowId;
-        const destRow = monitor.getItem().sourceRowId
-        const dragIndex = monitor.getItem().sourceIndex
-        const hoverIndex = props.index
+        const destRow = monitor.getItem().sourceRowId;
+        const dragIndex = monitor.getItem().sourceIndex;
+        const hoverIndex = props.index;
 
 
 		// Don't replace items with themselves
@@ -61,14 +61,18 @@ const sourceCollect = (connect, monitor) => {
     }
 }
 
-const dropCollect = (connect) => {
-    return {connectDropTarget: connect.dropTarget()}
+const dropCollect = (connect, monitor) => {
+    return {
+        connectDropTarget: connect.dropTarget(),
+        isOver: monitor.isOver()
+    }
 }
 
-const Cell = ({connectDragSource, connectDragPreview, connectDropTarget, isDragging, ...props}) => {
+const Cell = ({connectDragSource, connectDragPreview, connectDropTarget, isDragging, isOver, ...props}) => {
     return connectDragSource(connectDropTarget(
-        <div>
+        <div style={{height: '60px', width: '60px', padding: 0, margin: '0 10px',}}>
              <StyledNumber
+                isOver={isOver}
                 isDragging={isDragging}
                 onClick={(rowId, index) => props.addCaret(props.rowId, props.index)}>
                     <Input
