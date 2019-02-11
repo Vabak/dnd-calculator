@@ -3,7 +3,7 @@ import styled from 'styled-components';
 // import { findDOMNode } from 'react-dom'
 // import { Draggable } from 'react-beautiful-dnd';
 import { DragSource, DropTarget } from 'react-dnd';
-import { ItemTypes } from '../../constansts/contsansts'
+import { ItemTypes } from '../../constants/constants'
 import flow from 'lodash.flow'
 
 const StyledNumber = styled.div`
@@ -42,7 +42,12 @@ const cellTarget = {
         const destRow = props.rowId;
         const sourceRow = monitor.getItem().sourceRowId;
         const dragIndex = monitor.getItem().sourceIndex;
-        console.log()
+        if (sourceRow === destRow) {
+            props.swapCells(destRow, dragIndex, props.index)
+            return;
+        } 
+        props.swapCellsBetween(sourceRow, destRow, dragIndex, props.index)
+        
 	},
 }
 

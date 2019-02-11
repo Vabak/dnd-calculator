@@ -5,7 +5,7 @@ import { DropTarget } from 'react-dnd'
 import Caret from '../../components/Caret/Caret';
 import NumberCell from '../../components/NumberCell/NumberCell';
 import Operator from '../../components/Operator/Operator';
-import { ItemTypes } from '../../constansts/contsansts'
+import { ItemTypes } from '../../constants/constants'
 
 const Row = styled.div`
     width: 100%;
@@ -41,6 +41,7 @@ const InputRow = ({ connectDropTarget, isOver, ...props }) => {
                     index={index}
                     key={elem.id}
                     swapCells={props.swapCells}
+                    swapCellsBetween={props.swapCellsBetween}
                     elem={elem}
                     rowId={props.rowId}
                     addCaret={props.addCaret}

@@ -254,10 +254,10 @@ class Calculator extends Component {
         };
     }
 
-    swapCells = (rowId, sourceIndex, destIndex) => {
+    swapCells = (rowId, srcIndex, destIndex) => {
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
-        const srcEl = Object.assign({}, newElementsOrder[sourceIndex]);
-        newElementsOrder[sourceIndex] = newElementsOrder[destIndex];
+        const srcEl = Object.assign({}, newElementsOrder[srcIndex]);
+        newElementsOrder[srcIndex] = newElementsOrder[destIndex];
         newElementsOrder[destIndex] = srcEl; 
         this.setState({
             ...this.state,
@@ -265,6 +265,26 @@ class Calculator extends Component {
                 ...this.state.rows,
                 [rowId]: {
                     elementsOrder: newElementsOrder,
+                }
+            },
+        })
+    }
+    swapCellsBetween = (srcRow, destRow, srcIndex, destIndex) => {
+        const srcElementsOrder = [...this.state.rows[srcRow].elementsOrder];
+        const destElementsOrder = [...this.state.rows[destRow].elementsOrder];
+        const srcEl = Object.assign({}, srcElementsOrder[srcIndex]);
+        const destEl = Object.assign({}, destElementsOrder[destIndex]);
+        srcElementsOrder[srcIndex] = destEl;
+        destElementsOrder[destIndex] = srcEl; 
+        this.setState({
+            ...this.state,
+            rows: {
+                ...this.state.rows,
+                [srcRow]: {
+                    elementsOrder: srcElementsOrder,
+                },
+                [destRow]: {
+                    elementsOrder: destElementsOrder,
                 }
             },
         })
@@ -277,6 +297,7 @@ class Calculator extends Component {
                 removeCaret={this.removeCaret}
                 key={rowId}
                 swapCells={this.swapCells}
+                swapCellsBetween={this.swapCellsBetween}
                 handleInput={this.handleInputChange}
                 keyDown={this.handleKeyDown}
                 rowId={rowId}
