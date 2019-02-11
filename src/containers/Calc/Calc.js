@@ -3,6 +3,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 
 import InputRow from '../InputRow/InputRow';
 
+
 const OPERATORS = ['/', '+', '-', '*'];
 const NUMBERS = /^\d*$/
 
@@ -19,14 +20,10 @@ class Calculator extends Component {
         },
         rowIds: ['row-1'],
         elementsValues: {
-            // 'result': {
-            //     id: 'result',
-            //     value: '0'
-            // }
         },
         caret: {
             isExist: true,
-            positionRowRow: 'row-1',
+            positionRow: 'row-1',
         }
     }
 
@@ -58,7 +55,7 @@ class Calculator extends Component {
                     value: value
                 }
             }
-        }, () => this.calculation(rowId))
+        })
     }
 
     handleKeyDown = (event, rowId) => {
@@ -103,11 +100,12 @@ class Calculator extends Component {
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
         const newElementId = 'num-' + Date.now().toString();
 
-        
+
         const newElement = {
             id: newElementId,
             type: 'number',
-            valueId: newElementId
+            valueId: newElementId,
+            bound: false,
         }
         newElementsOrder.push(newElement);
         this.setState({
@@ -121,7 +119,7 @@ class Calculator extends Component {
                 ...this.state.elementsValues,
                 [newElementId]: {
                     value: '',
-                    tied: 1,
+                    tied: [newElementId],
                 }
             },
         })
@@ -208,24 +206,7 @@ class Calculator extends Component {
                 }
             }
         })
-        this.calculation(caretpositionRow)
     }
-    // replaceOperator = (operator) => {
-    //     let newData = [...this.state.row.data];
-    //     const newOperator = {
-    //         id: Date.now(),
-    //         value: operator,
-    //         type: 'operator'
-    //     };
-    //     newData[newData.length - 1] = newOperator;
-    //     this.setState({
-    //         ...this.state,
-    //         row: {
-    //             ...this.state.row,
-    //             data: newData,
-    //         }
-    //     })
-    // }
     validateBeforeEval = (str, rowId) => {
         let prevEl = null;
         let typeCounter = 0;
@@ -258,7 +239,7 @@ class Calculator extends Component {
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
         const srcEl = Object.assign({}, newElementsOrder[srcIndex]);
         newElementsOrder[srcIndex] = newElementsOrder[destIndex];
-        newElementsOrder[destIndex] = srcEl; 
+        newElementsOrder[destIndex] = srcEl;
         this.setState({
             ...this.state,
             rows: {
@@ -275,7 +256,7 @@ class Calculator extends Component {
         const srcEl = Object.assign({}, srcElementsOrder[srcIndex]);
         const destEl = Object.assign({}, destElementsOrder[destIndex]);
         srcElementsOrder[srcIndex] = destEl;
-        destElementsOrder[destIndex] = srcEl; 
+        destElementsOrder[destIndex] = srcEl;
         this.setState({
             ...this.state,
             rows: {
@@ -289,6 +270,39 @@ class Calculator extends Component {
             },
         })
     }
+    cloneCell = (srcRow, destRow, srcIndex) => {
+        const srcElementsOrder = [...this.state.rows[srcRow].elementsOrder];
+        const destElementsOrder = [...this.state.rows[destRow].elementsOrder];
+        const srcEl = srcElementsOrder[srcIndex];
+        const newElementId = 'num-' + Date.now().toString();
+        const cloneEl = {
+            id: newElementId,
+            type: 'number',
+            valueId: srcEl.valueId,
+            bound: true,
+        }
+        destElementsOrder.push(cloneEl);
+        const newValue = Object.assign({}, this.state.elementsValues[srcEl.valueId]); 
+        newValue.tied.push(newElementId)
+        if (!srcEl.bound) srcEl.bound = true;
+        this.setState({
+            ...this.state,
+            elementsValues: {
+                ...this.state.elementsValues,
+                [srcEl.valueId]: newValue
+            },
+            rows: {
+                ...this.state.rows,
+                [srcRow]: {
+                    elementsOrder: srcElementsOrder,
+                },
+                [destRow]: {
+                    elementsOrder: destElementsOrder,
+                }
+            },
+        })
+    }
+
     render() {
         const rows = this.state.rowIds.map(rowId => (
             <InputRow
@@ -298,6 +312,7 @@ class Calculator extends Component {
                 key={rowId}
                 swapCells={this.swapCells}
                 swapCellsBetween={this.swapCellsBetween}
+                cloneCell={this.cloneCell}
                 handleInput={this.handleInputChange}
                 keyDown={this.handleKeyDown}
                 rowId={rowId}
@@ -308,9 +323,9 @@ class Calculator extends Component {
             />
         ))
         return (
-                <div>
-                    {rows}
-                </div>
+            <div>
+                {rows}
+            </div>
         );
     }
 }

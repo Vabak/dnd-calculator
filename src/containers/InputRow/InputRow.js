@@ -25,8 +25,12 @@ const rowCollect = (connect, monitor) => {
 }
 
 const rowTarget = {
-    drop(props) {
-		return { rowId: props.rowId }
+    drop(props, monitor) {
+        const destRow = props.rowId;
+        const sourceRow = monitor.getItem().sourceRowId;
+        if (destRow === sourceRow) return;
+        const dragIndex = monitor.getItem().sourceIndex;
+        props.cloneCell(sourceRow, destRow, dragIndex)
 	},
 }
 
@@ -39,10 +43,10 @@ const InputRow = ({ connectDropTarget, isOver, ...props }) => {
                     handleInput={props.handleInput}
                     inputId={elem.id}
                     index={index}
+                    bound={elem.bound}
                     key={elem.id}
                     swapCells={props.swapCells}
                     swapCellsBetween={props.swapCellsBetween}
-                    elem={elem}
                     rowId={props.rowId}
                     addCaret={props.addCaret}
                     valueId={elem.valueId}

@@ -10,7 +10,7 @@ const StyledNumber = styled.div`
     width: 40px;
     height: 40px;
     padding: 10px;
-    background-color: ${props => props.isOver ? 'lightgreen' : 'lightblue'};
+    background-color: ${props => props.isOver ? 'lightgreen' : props.bound ? 'orange' : 'lightblue'};
     opacity: ${props => props.isDragging ? 0 : 1};
     display: inline-block;
     margin: 0 10px;
@@ -47,7 +47,6 @@ const cellTarget = {
             return;
         } 
         props.swapCellsBetween(sourceRow, destRow, dragIndex, props.index)
-        
 	},
 }
 
@@ -67,12 +66,13 @@ const dropCollect = (connect, monitor) => {
     }
 }
 
-const Cell = ({connectDragSource, connectDragPreview, connectDropTarget, isDragging, isOver, ...props}) => {
+const Cell = ({connectDragSource, connectDragPreview, connectDropTarget, isDragging, bound, isOver, ...props}) => {
     return connectDragSource(connectDropTarget(
         <div style={{height: '60px', width: '60px', padding: 0, margin: '0 10px',}}>
              <StyledNumber
                 isOver={isOver}
                 isDragging={isDragging}
+                bound={bound}
                 onClick={(rowId, index) => props.addCaret(props.rowId, props.index)}>
                     <Input
                         autoFocus
