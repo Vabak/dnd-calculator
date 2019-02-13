@@ -280,7 +280,7 @@ class Calculator extends Component {
             type: 'number',
             valueId: srcEl.valueId,
             bound: true,
-        }
+        };
         destElementsOrder.push(cloneEl);
         const newValue = Object.assign({}, this.state.elementsValues[srcEl.valueId]); 
         newValue.tied.push(newElementId)

@@ -25,12 +25,14 @@ const rowCollect = (connect, monitor) => {
 }
 
 const rowTarget = {
-    drop(props, monitor) {
+    drop(props, monitor, component) {
         const destRow = props.rowId;
         const sourceRow = monitor.getItem().sourceRowId;
         if (destRow === sourceRow) return;
+        if (monitor.didDrop()) return;
         const dragIndex = monitor.getItem().sourceIndex;
-        props.cloneCell(sourceRow, destRow, dragIndex)
+        
+        props.cloneCell(sourceRow, destRow, dragIndex);
 	},
 }
 

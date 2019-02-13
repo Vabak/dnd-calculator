@@ -69,7 +69,7 @@ const dropCollect = (connect, monitor) => {
 const Cell = ({connectDragSource, connectDragPreview, connectDropTarget, isDragging, bound, isOver, ...props}) => {
     return connectDragSource(connectDropTarget(
         <div style={{height: '60px', width: '60px', padding: 0, margin: '0 10px',}}>
-             <StyledNumber
+            <StyledNumber
                 isOver={isOver}
                 isDragging={isDragging}
                 bound={bound}
@@ -81,7 +81,7 @@ const Cell = ({connectDragSource, connectDragPreview, connectDropTarget, isDragg
                         onKeyDown={e => e.stopPropagation()}
                         onChange={(event) => { props.handleInput(event, props.valueId, props.rowId) }}
                     />
-                </StyledNumber>
+            </StyledNumber>
         </div>
     )
                
