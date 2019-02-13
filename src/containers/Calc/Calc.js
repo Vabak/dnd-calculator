@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { DragDropContext } from 'react-beautiful-dnd';
 
 import InputRow from '../InputRow/InputRow';
 
@@ -22,8 +21,7 @@ class Calculator extends Component {
         elementsValues: {
         },
         caret: {
-            isExist: true,
-            positionRow: 'row-1',
+            positionRow: null,
         }
     }
 
@@ -38,6 +36,7 @@ class Calculator extends Component {
             return;
         }
     }
+
     inputValidation = (value) => {
         if (NUMBERS.test(value)) return 'number';
         if (OPERATORS.includes(value) || OPERATORS.includes(value.slice(-1))) return 'operator';
@@ -100,7 +99,6 @@ class Calculator extends Component {
         const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
         const newElementId = 'num-' + Date.now().toString();
 
-
         const newElement = {
             id: newElementId,
             type: 'number',
@@ -152,40 +150,16 @@ class Calculator extends Component {
     }
 
     addCaret = (rowId, index) => {
-        if (this.state.caret.isExist) return;
-        const newElementsOrder = [...this.state.rows[rowId].elementsOrder];
-
-        newElementsOrder.push({
-            id: 'caret',
-            type: 'caret',
-            value: 'caret'
-        });
         this.setState({
-            rows: {
-                ...this.state.rows,
-                [rowId]: {
-                    elementsOrder: newElementsOrder,
-                }
-            },
             caret: {
-                isExist: true,
                 positionRow: rowId,
             }
         })
     }
 
     removeCaret = (rowId) => {
-        const oldElementsOrder = [...this.state.rows[rowId].elementsOrder];
-        const newElementsOrder = oldElementsOrder.filter(el => el.id !== 'caret');
         this.setState({
-            rows: {
-                ...this.state.rows,
-                [rowId]: {
-                    elementsOrder: newElementsOrder,
-                }
-            },
             caret: {
-                isExist: false,
                 positionRow: null,
             }
         })
@@ -193,9 +167,7 @@ class Calculator extends Component {
 
     deleteElement() {
         const caretpositionRow = this.state.caret.positionRow;
-        const caretIndex = this.state.rows[caretpositionRow].elementsOrder.findIndex(el => el === 'caret');
         const newElementsOrder = [...this.state.rows[caretpositionRow].elementsOrder];
-        // newElementsOrder.splice(caretIndex - 1, 1)
         newElementsOrder.pop();
         this.setState({
             rows: {
@@ -207,6 +179,7 @@ class Calculator extends Component {
             }
         })
     }
+
     validateBeforeEval = (str, rowId) => {
         let prevEl = null;
         let typeCounter = 0;
@@ -250,6 +223,7 @@ class Calculator extends Component {
             },
         })
     }
+
     swapCellsBetween = (srcRow, destRow, srcIndex, destIndex) => {
         const srcElementsOrder = [...this.state.rows[srcRow].elementsOrder];
         const destElementsOrder = [...this.state.rows[destRow].elementsOrder];
@@ -270,6 +244,7 @@ class Calculator extends Component {
             },
         })
     }
+
     cloneCell = (srcRow, destRow, srcIndex) => {
         const srcElementsOrder = [...this.state.rows[srcRow].elementsOrder];
         const destElementsOrder = [...this.state.rows[destRow].elementsOrder];
@@ -306,7 +281,7 @@ class Calculator extends Component {
     render() {
         const rows = this.state.rowIds.map(rowId => (
             <InputRow
-                isActive={this.state.rows[rowId].isActive}
+                caretPos={this.state.caret.positionRow}
                 addCaret={this.addCaret}
                 removeCaret={this.removeCaret}
                 key={rowId}

@@ -1,7 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-// import { findDOMNode } from 'react-dom'
-// import { Draggable } from 'react-beautiful-dnd';
 import { DragSource, DropTarget } from 'react-dnd';
 import { ItemTypes } from '../../constants/constants'
 import flow from 'lodash.flow'
@@ -30,7 +28,6 @@ const cellSource = {
             sourceRowId: props.rowId,
             sourceIndex: props.index,
         };
-
     },
 };
 
@@ -72,8 +69,7 @@ const Cell = ({connectDragSource, connectDragPreview, connectDropTarget, isDragg
             <StyledNumber
                 isOver={isOver}
                 isDragging={isDragging}
-                bound={bound}
-                onClick={(rowId, index) => props.addCaret(props.rowId, props.index)}>
+                bound={bound}>
                     <Input
                         autoFocus
                         value={props.value}

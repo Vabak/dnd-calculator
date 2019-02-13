@@ -12,6 +12,7 @@ const StyledCaret = styled.div`
   background-color: blue;
   color: blue;
   position: relative;
+  right: 0;
   opacity: 0.5;
   height: 1.5em;
   width: 3px;

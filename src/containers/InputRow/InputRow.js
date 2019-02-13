@@ -60,26 +60,30 @@ const InputRow = ({ connectDropTarget, isOver, ...props }) => {
                     key={elem.id}
                     addCaret={props.addCaret}
                     operator={props.elementsValues[elem.valueId].value} />
-            case 'caret':
-                return <Caret
-                    key={elem.id}
-                    id={elem.id}
-                    rowId={props.rowId}
-                />
+            // case 'caret':
+            //     return <Caret
+            //         key={elem.id}
+            //         id={elem.id}
+            //         rowId={props.rowId}
+            //     />
             default:
                 return null;
         }
 
     });
-
+    const caret = props.caretPos === props.rowId ? <Caret /> : null; 
     return connectDropTarget(
         <div>
             <Row
                 isOver={isOver}
                 tabIndex="0"
+                onFocus={() => props.addCaret(props.rowId)}
+                onBlur={() => props.removeCaret(props.rowId)}
                 onKeyDown={(event, id) => props.keyDown(event, props.rowId)}
                 rowId={props.rowId}>
                 {mathRow}
+                {caret}
+                <Operator operator={'='} />
             </Row>
         </div>
     );
