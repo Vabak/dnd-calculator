@@ -12,7 +12,6 @@ class Calculator extends Component {
             'row-1': {
                 isActive: true,
                 id: 'row-1',
-                // elementsOrder: ['caret', 'result', 'equal'],
                 elementsOrder: [],
                 eval: 0,
             },
@@ -54,7 +53,7 @@ class Calculator extends Component {
                     value: value
                 }
             }
-        })
+        }, () => this.calculation(rowId))
     }
 
     handleKeyDown = (event, rowId) => {
@@ -120,7 +119,7 @@ class Calculator extends Component {
                     tied: [newElementId],
                 }
             },
-        })
+        }, () => this.calculation(rowId))
     }
 
     createMathOperator = (operator, inputId, rowId) => {
@@ -177,7 +176,7 @@ class Calculator extends Component {
                     elementsOrder: newElementsOrder,
                 }
             }
-        })
+        }, () => this.calculation(caretpositionRow))
     }
 
     validateBeforeEval = (str, rowId) => {
@@ -199,13 +198,13 @@ class Calculator extends Component {
 
     calculation(rowId) {
         let equation = '';
-        // if (this.state.rows[rowId].elementsOrder.length == 0) return;
         this.state.rows[rowId].elementsOrder.map(el => {
-            equation = equation + this.state.elementsValues[el.id].value
+            equation = equation + this.state.elementsValues[el.valueId].value
         })
         if (this.validateBeforeEval(equation, rowId)) {
             return;
         };
+        console.log(equation);
     }
 
     swapCells = (rowId, srcIndex, destIndex) => {
@@ -221,7 +220,7 @@ class Calculator extends Component {
                     elementsOrder: newElementsOrder,
                 }
             },
-        })
+        }, () => this.calculation(rowId))
     }
 
     swapCellsBetween = (srcRow, destRow, srcIndex, destIndex) => {
@@ -242,7 +241,7 @@ class Calculator extends Component {
                     elementsOrder: destElementsOrder,
                 }
             },
-        })
+        }, () => this.calculation(srcRow), () => this.calculation(destRow))
     }
 
     cloneCell = (srcRow, destRow, srcIndex) => {
@@ -275,7 +274,7 @@ class Calculator extends Component {
                     elementsOrder: destElementsOrder,
                 }
             },
-        })
+        }, () => this.calculation(destRow))
     }
 
     render() {

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { DragSource, DropTarget } from 'react-dnd';
 import { ItemTypes } from '../../constants/constants'
 import flow from 'lodash.flow'
