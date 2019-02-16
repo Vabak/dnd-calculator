@@ -6,6 +6,7 @@ import Caret from '../../components/Caret/Caret';
 import NumberCell from '../../components/NumberCell/NumberCell';
 import Operator from '../../components/Operator/Operator';
 import { ItemTypes } from '../../constants/constants'
+import Result from '../../components/Result/Result';
 
 const Row = styled.div`
     width: 100%;
@@ -60,12 +61,6 @@ const InputRow = ({ connectDropTarget, isOver, ...props }) => {
                     key={elem.id}
                     addCaret={props.addCaret}
                     operator={props.elementsValues[elem.valueId].value} />
-            // case 'caret':
-            //     return <Caret
-            //         key={elem.id}
-            //         id={elem.id}
-            //         rowId={props.rowId}
-            //     />
             default:
                 return null;
         }
@@ -84,6 +79,10 @@ const InputRow = ({ connectDropTarget, isOver, ...props }) => {
                 {mathRow}
                 {caret}
                 <Operator operator={'='} />
+                <Result 
+                    isValid={props.isValid}
+                    result={props.result}
+                />
             </Row>
         </div>
     );
