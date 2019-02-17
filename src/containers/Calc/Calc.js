@@ -53,7 +53,7 @@ class Calculator extends Component {
                     value: value
                 }
             }
-        }, () => this.calculation(rowId))
+        }, )
     }
 
     handleKeyDown = (event, rowId) => {
@@ -122,7 +122,7 @@ class Calculator extends Component {
                     tied: [newElementId],
                 }
             },
-        }, () => this.calculation(rowId))
+        }, )
     }
 
     createMathOperator = (operator, inputId, rowId) => {
@@ -140,6 +140,7 @@ class Calculator extends Component {
             rows: {
                 ...this.state.rows,
                 [rowId]: {
+                    ...this.state.rows[rowId],
                     elementsOrder: newElementsOrder,
                 }
             },
@@ -180,69 +181,53 @@ class Calculator extends Component {
                     elementsOrder: newElementsOrder,
                 }
             }
-        }, () => this.calculation(caretpositionRow))
+        },)
     }
 
     validateBeforeEval = (str, rowId) => {
-        let prevEl = null;
-        let typeCounter = 0;
-        for (let i = 0; i < this.state.rows[rowId].elementsOrder.length; i++) {
-            if (typeCounter >= 2) return false;
-            const el = this.state.rows[rowId].elementsOrder[i];
-            if (prevEl === el) {
-                typeCounter++;
+        const elementsOrder = this.state.rows[rowId].elementsOrder
+        let counter = 0;
+        let prev = elementsOrder[0].type
+        for (let i = 0; i <= elementsOrder.length-1 ; i++) {
+            const current = elementsOrder[i];
+            if (prev === current.type) {
+                counter++;
             } else {
-                prevEl = el;
-                typeCounter = 0;
+                prev = current.type;
+                counter = 0;
             }
+            if (counter >= 2) return false;
         }
-        if (this.inputValidation(str) === 'operator') return false;
+        // // if (this.inputValidation(str) === 'operator') return false;
         return true;
     }
 
-    calculation(rowId) {
+    calculation = (rowId) => {
         let equation = '';
         this.state.rows[rowId].elementsOrder.map(el => {
             equation = equation + this.state.elementsValues[el.valueId].value
         })
-        // if (!this.validateBeforeEval(equation, rowId)) {
-        //     return;
-        // };
-        try {
 
+
+        try {
+            if (!this.validateBeforeEval(equation, rowId)) {
+                throw '';
+            };
             const result = eval(equation);
+            const newRows = Object.assign({}, this.state.rows)
+            newRows[rowId].result = result;
+            newRows[rowId].isValid = true;
             this.setState({
-                rows: {
-                    ...this.state.rows,
-                    [rowId]: {
-                        ...this.state.rows[rowId],
-                        result: result,
-                        isValid: true,
-                    }
-                }
+                rows: newRows
             })
         } catch(e) {
+            const newRows = Object.assign({}, this.state.rows)
+            newRows[rowId].result = 'error';
+            newRows[rowId].isValid = false;
             this.setState({
-                rows: {
-                    ...this.state.rows,
-                    [rowId]: {
-                        ...this.state.rows[rowId],
-                        result: 'error',
-                        isValid: false,
-                    }
-                }
+                rows: newRows 
             })
         }
-        // this.setState({
-        //     rows: {
-        //         ...this.state.rows,
-        //         [rowId]: {
-        //             ...this.state.rows[rowId],
-        //             result: result,
-        //             isValid: true,
-        //         }
-        //     }
-        // })
     }
 
     swapCells = (rowId, srcIndex, destIndex) => {
@@ -259,7 +244,7 @@ class Calculator extends Component {
                     elementsOrder: newElementsOrder,
                 }
             },
-        }, () => this.calculation(rowId))
+        }, )
     }
 
     swapCellsBetween = (srcRow, destRow, srcIndex, destIndex) => {
@@ -274,16 +259,15 @@ class Calculator extends Component {
             rows: {
                 ...this.state.rows,
                 [srcRow]: {
+                    ...this.state.rows[srcRow],
                     elementsOrder: srcElementsOrder,
                 },
                 [destRow]: {
+                    ...this.state.rows[destRow],
                     elementsOrder: destElementsOrder,
                 }
             },
-        }, () => {
-            this.calculation(srcRow); 
-            this.calculation(destRow)
-        })
+        }, )
     }
 
     cloneCell = (srcRow, destRow, srcIndex) => {
@@ -310,13 +294,15 @@ class Calculator extends Component {
             rows: {
                 ...this.state.rows,
                 [srcRow]: {
+                    ...this.state.rows[srcRow],
                     elementsOrder: srcElementsOrder,
                 },
                 [destRow]: {
+                    ...this.state.rows[destRow],
                     elementsOrder: destElementsOrder,
                 }
             },
-        }, () => this.calculation(destRow))
+        }, )
     }
 
     render() {
@@ -333,6 +319,7 @@ class Calculator extends Component {
                 handleInput={this.handleInputChange}
                 keyDown={this.handleKeyDown}
                 rowId={rowId}
+                calc={this.calculation}
                 elementsValues={this.state.elementsValues}
                 result={this.state.rows[rowId].result}
                 isValid={this.state.rows[rowId].isValid}

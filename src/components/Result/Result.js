@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const StyledSpan = styled.span`
-    width: 40px;
+    width: auto;
     height: 40px;
     padding: 10px;
     background-color: ${props => props.isValid ? 'lightgreen' : 'red'};

@@ -73,6 +73,7 @@ const Cell = ({connectDragSource, connectDragPreview, connectDropTarget, isDragg
                 bound={bound}>
                     <Input
                         autoFocus
+                        onFocus={(e) => {e.stopPropagation()}}
                         value={props.value}
                         rowId={props.rowId}
                         onKeyDown={e => e.stopPropagation()}
