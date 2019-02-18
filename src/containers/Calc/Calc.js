@@ -172,8 +172,14 @@ class Calculator extends Component {
     deleteElement() {
         const caretpositionRow = this.state.caret.positionRow;
         const newElementsOrder = [...this.state.rows[caretpositionRow].elementsOrder];
-        newElementsOrder.pop();
+        const deleted = newElementsOrder.pop();
+        const newValues = Object.assign({}, this.state.elementsValues)
+        const newTied = newValues[deleted.valueId].tied.filter(el => {
+           return el !== deleted.id
+        })
+        newValues[deleted.valueId].tied = newTied
         this.setState({
+            elementsValues: newValues,
             rows: {
                 ...this.state.rows,
                 [caretpositionRow]: {
@@ -181,7 +187,7 @@ class Calculator extends Component {
                     elementsOrder: newElementsOrder,
                 }
             }
-        },)
+        })
     }
 
     validateBeforeEval = (str, rowId) => {
@@ -198,7 +204,6 @@ class Calculator extends Component {
             }
             if (counter >= 2) return false;
         }
-        // // if (this.inputValidation(str) === 'operator') return false;
         return true;
     }
 
@@ -207,7 +212,6 @@ class Calculator extends Component {
         this.state.rows[rowId].elementsOrder.map(el => {
             equation = equation + this.state.elementsValues[el.valueId].value
         })
-
 
         try {
             if (!this.validateBeforeEval(equation, rowId)) {
@@ -267,7 +271,7 @@ class Calculator extends Component {
                     elementsOrder: destElementsOrder,
                 }
             },
-        }, )
+        })
     }
 
     cloneCell = (srcRow, destRow, srcIndex) => {
