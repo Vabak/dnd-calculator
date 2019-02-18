@@ -4,7 +4,7 @@ import InputRow from '../InputRow/InputRow';
 
 
 const OPERATORS = ['/', '+', '-', '*'];
-const NUMBERS = /^\d*$/
+const NUMBERS = /^\d*$/;
 
 class Calculator extends Component {
     state = {
@@ -119,7 +119,10 @@ class Calculator extends Component {
                 ...this.state.elementsValues,
                 [newElementId]: {
                     value: '',
-                    tied: [newElementId],
+                    tied: [{
+                        rowId: rowId,
+                        id: newElementId
+                    }],
                 }
             },
         }, )
@@ -170,14 +173,64 @@ class Calculator extends Component {
     }
 
     deleteElement() {
+        // Delete from ElementsOrder
         const caretpositionRow = this.state.caret.positionRow;
         const newElementsOrder = [...this.state.rows[caretpositionRow].elementsOrder];
+        if (newElementsOrder.length === 0) return;
         const deleted = newElementsOrder.pop();
-        const newValues = Object.assign({}, this.state.elementsValues)
+
+        if (deleted.type === 'operator') {
+            const newValues = {...this.state.elementsValues}
+            delete newValues[deleted.valueId]
+            this.setState({
+                elementsValues: newValues,
+                rows: {
+                    ...this.state.rows,
+                    [caretpositionRow]: {
+                        ...this.state.caretpositionRow,
+                        elementsOrder: newElementsOrder,
+                    }
+                }
+            })
+            return;
+        }
+
+        // Delete from ElementsValues
+        const newValues = {...this.state.elementsValues}
         const newTied = newValues[deleted.valueId].tied.filter(el => {
-           return el !== deleted.id
+           return el.id !== deleted.id
         })
         newValues[deleted.valueId].tied = newTied
+
+        if ( newTied.length === 0 ) { 
+            delete newValues[deleted.valueId]
+        }
+
+        // Unbound single element
+        if ( newTied.length === 1 ) {
+            const unbound = newTied[0];
+            const unboundElementsOrder = [...this.state.rows[unbound.rowId].elementsOrder]
+            unboundElementsOrder.map(el => {
+                if ( el.id === unbound.id ) return el.bound = false;
+            })
+            this.setState({
+                elementsValues: newValues,
+                rows: {
+                    ...this.state.rows,
+                    [unbound.rowId]: {
+                        ...this.state.rows[unbound.rowId],
+                        elementsOrder: unboundElementsOrder,
+                    },
+
+                    [caretpositionRow]: {
+                        ...this.state.caretpositionRow,
+                        elementsOrder: newElementsOrder,
+                    }
+                }
+            })
+            return;
+        }
+
         this.setState({
             elementsValues: newValues,
             rows: {
@@ -191,6 +244,7 @@ class Calculator extends Component {
     }
 
     validateBeforeEval = (str, rowId) => {
+        if (str.length === 0) return true;
         const elementsOrder = this.state.rows[rowId].elementsOrder
         let counter = 0;
         let prev = elementsOrder[0].type
@@ -212,12 +266,12 @@ class Calculator extends Component {
         this.state.rows[rowId].elementsOrder.map(el => {
             equation = equation + this.state.elementsValues[el.valueId].value
         })
-
         try {
             if (!this.validateBeforeEval(equation, rowId)) {
                 throw '';
             };
-            const result = eval(equation);
+            let result = eval(equation);
+            if (result === undefined) result = 0;
             const newRows = Object.assign({}, this.state.rows)
             newRows[rowId].result = result;
             newRows[rowId].isValid = true;
@@ -251,15 +305,28 @@ class Calculator extends Component {
         }, )
     }
 
-    swapCellsBetween = (srcRow, destRow, srcIndex, destIndex) => {
+    swapCellsBetweenRows = (srcRow, destRow, srcIndex, destIndex) => {
         const srcElementsOrder = [...this.state.rows[srcRow].elementsOrder];
         const destElementsOrder = [...this.state.rows[destRow].elementsOrder];
         const srcEl = Object.assign({}, srcElementsOrder[srcIndex]);
         const destEl = Object.assign({}, destElementsOrder[destIndex]);
         srcElementsOrder[srcIndex] = destEl;
         destElementsOrder[destIndex] = srcEl;
+        
+        const newValues = Object.assign({},this.state.elementsValues);
+        newValues[srcEl.valueId].tied.map(el => {
+            if ( el.id === srcEl.id ) {
+                return el.rowId = destRow;
+            }
+        })
+        newValues[destEl.valueId].tied.map(el => {
+            if ( el.id === destEl.id ) {
+                return el.rowId = srcRow;
+            }
+        })
+
         this.setState({
-            ...this.state,
+            elementsValues: newValues,
             rows: {
                 ...this.state.rows,
                 [srcRow]: {
@@ -274,7 +341,7 @@ class Calculator extends Component {
         })
     }
 
-    cloneCell = (srcRow, destRow, srcIndex) => {
+    cloneNumber = (srcRow, destRow, srcIndex) => {
         const srcElementsOrder = [...this.state.rows[srcRow].elementsOrder];
         const destElementsOrder = [...this.state.rows[destRow].elementsOrder];
         const srcEl = srcElementsOrder[srcIndex];
@@ -287,7 +354,10 @@ class Calculator extends Component {
         };
         destElementsOrder.push(cloneEl);
         const newValue = Object.assign({}, this.state.elementsValues[srcEl.valueId]); 
-        newValue.tied.push(newElementId)
+        newValue.tied.push({
+            rowId: destRow,
+            id: newElementId,
+        })
         if (!srcEl.bound) srcEl.bound = true;
         this.setState({
             ...this.state,
@@ -309,8 +379,7 @@ class Calculator extends Component {
         }, )
     }
 
-    render() {
-        
+    render() { 
         const rows = this.state.rowIds.map(rowId => (
             <InputRow
                 caretPos={this.state.caret.positionRow}
@@ -318,8 +387,8 @@ class Calculator extends Component {
                 removeCaret={this.removeCaret}
                 key={rowId}
                 swapCells={this.swapCells}
-                swapCellsBetween={this.swapCellsBetween}
-                cloneCell={this.cloneCell}
+                swapCellsBetween={this.swapCellsBetweenRows}
+                cloneNumber={this.cloneNumber}
                 handleInput={this.handleInputChange}
                 keyDown={this.handleKeyDown}
                 rowId={rowId}

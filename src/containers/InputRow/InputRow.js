@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Droppable } from 'react-beautiful-dnd';
 import { DropTarget } from 'react-dnd'
 import Caret from '../../components/Caret/Caret';
 import NumberCell from '../../components/NumberCell/NumberCell';
@@ -33,7 +32,7 @@ const rowTarget = {
         if (monitor.didDrop()) return;
         const dragIndex = monitor.getItem().sourceIndex;
         
-        props.cloneCell(sourceRow, destRow, dragIndex);
+        props.cloneNumber(sourceRow, destRow, dragIndex);
 	},
 }
 
