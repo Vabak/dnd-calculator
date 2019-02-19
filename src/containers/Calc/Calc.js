@@ -380,6 +380,7 @@ class Calculator extends Component {
     render() { 
         const rows = this.state.rowIds.map(rowId => (
             <InputRow
+                setRef={this.setTextInputRef}
                 caretPos={this.state.caret.positionRow}
                 addCaret={this.addCaret}
                 removeCaret={this.removeCaret}

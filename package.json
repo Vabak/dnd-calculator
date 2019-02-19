@@ -1,6 +1,7 @@
 {
   "name": "dnd-calculator",
   "version": "0.1.0",
+  "homepage": "http://Vabak.github.io/dnd-calculator",
   "private": true,
   "dependencies": {
     "lodash.flow": "^3.5.0",

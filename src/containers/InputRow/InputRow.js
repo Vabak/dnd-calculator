@@ -42,6 +42,11 @@ class InputRow extends Component {
             prevProps.elementsValues !== this.props.elementsValues)
             this.props.calc(this.props.rowId)
     }
+    myRef = React.createRef();
+
+    componentDidMount() {
+        this.myRef.current.focus()
+    }
     
     render() { 
         let mathRow = this.props.elementsOrder.map((elem, index) => {
@@ -74,10 +79,11 @@ class InputRow extends Component {
         const caret = this.props.caretPos === this.props.rowId ? <Caret /> : null; 
         return connectDropTarget(
             <div>
-                <Row
+                <Row    
+                    ref={this.myRef}
                     isOver={isOver}
                     tabIndex="0"
-                    onFocus={() => this.props.addCaret(this.props.rowId)}
+                    onFocus={(ref) => this.props.addCaret(this.props.rowId)}
                     onBlur={() => this.props.removeCaret(this.props.rowId)}
                     onKeyDown={(event, id) => this.props.keyDown(event, this.props.rowId)}
                     rowId={this.props.rowId}>
