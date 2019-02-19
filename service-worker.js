@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/Vabak/dnd-calculator/precache-manifest.f02d2834595179228847c61b8cac5ffa.js"
+  "/dnd-calculator/precache-manifest.f7b4a0709ca3fa0c58db980d57df2b57.js"
 );
 
 workbox.clientsClaim();
@@ -28,7 +28,7 @@ self.__precacheManifest = [].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerNavigationRoute("/Vabak/dnd-calculator/index.html", {
+workbox.routing.registerNavigationRoute("/dnd-calculator/index.html", {
   
   blacklist: [/^\/_/,/\/[^\/]+\.[^\/]+$/],
 });
