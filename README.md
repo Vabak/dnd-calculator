@@ -10,6 +10,8 @@ Type delete to remove them.
 Press enter in a row to add a new row.
 You can drag cells to swap them or drag cells in another row to create a copy of it. 
 
+![alt text](https://github.com/Vabak/dnd-calculator/blob/master/calc-use.gif)
+
 ### Installing
 
 Clone or download repository https://github.com/Vabak/dnd-calculator.git
