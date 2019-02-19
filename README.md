@@ -1,7 +1,7 @@
 # Reactive drag-n-drop calculator
 
 Calculator on React, React-dnd, styled-components.
-Link for example https://vabak.github.io/dnd-calculator/
+Link to example https://vabak.github.io/dnd-calculator/
 
 ## How to use
 
