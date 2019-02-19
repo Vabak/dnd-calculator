@@ -5,7 +5,6 @@
   "dependencies": {
     "lodash.flow": "^3.5.0",
     "react": "^16.7.0",
-    "react-beautiful-dnd": "^10.0.3",
     "react-dnd": "^7.0.2",
     "react-dnd-html5-backend": "^7.0.2",
     "react-dom": "^16.7.0",

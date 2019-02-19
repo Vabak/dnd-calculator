@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 
+import { NUMBERS, OPERATORS } from '../../constants/constants'
 import InputRow from '../InputRow/InputRow';
 
-
-const OPERATORS = ['/', '+', '-', '*'];
-const NUMBERS = /^\d*$/;
 
 class Calculator extends Component {
     state = {

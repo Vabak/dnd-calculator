@@ -6,18 +6,19 @@ import { ItemTypes } from '../../constants/constants'
 import flow from 'lodash.flow'
 
 const StyledNumber = styled.div`
-    width: 40px;
     height: 40px;
     padding: 10px;
+    padding-top: 13px;
+    border-radius: 20%;
     background-color: ${props => props.isOver ? 'lightgreen' : props.bound ? 'orange' : 'lightblue'};
     opacity: ${props => props.isDragging ? 0 : 1};
     display: inline-block;
-    margin: 0 10px;
 `;
 
 const Input = styled.input`
-    width: 80%;
+    width: 100%;
     height: 80%;
+    font-size: 1.3em;
     background-color: lightgray;
     border: none;  
 `;
@@ -66,7 +67,7 @@ const dropCollect = (connect, monitor) => {
 
 const Cell = ({connectDragSource, connectDragPreview, connectDropTarget, isDragging, bound, isOver, ...props}) => {
     return connectDragSource(connectDropTarget(
-        <div style={{height: '60px', width: '60px', padding: 0, margin: '0 10px',}}>
+        <div style={{height: '60px', width: '60px', padding: 0, margin: '0 10px', 'border-radius': '20%'}}>
             <StyledNumber
                 isOver={isOver}
                 isDragging={isDragging}

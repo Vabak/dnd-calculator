@@ -8,18 +8,13 @@ const blinker = keyframes`
 `
 
 const StyledCaret = styled.div`
- font-size: 12px;
   background-color: blue;
-  color: blue;
-  position: relative;
-  right: 0;
+  position: absolute;
+  left: 0;
   opacity: 0.5;
-  height: 1.5em;
+  height: 100%;
   width: 3px;
-  max-width: 3px;
   overflow: hidden;
-  text-indent: -5px;
-  display: inline-block;
   text-decoration: blink;
   animation: ${blinker} 1s linear infinite;
 `;
